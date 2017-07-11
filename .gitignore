@@ -1,3 +1,9 @@
+# files created by the tests
+tmp.*
+
+# Pycharm
+/.idea
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -43,7 +49,7 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
-*.cover
+*,cover
 .hypothesis/
 
 # Translations
@@ -89,13 +95,8 @@ ENV/
 
 # Spyder project settings
 .spyderproject
-.spyproject
 
 # Rope project settings
 .ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
+/examples/step/ASM0001_ASM_1_ASM_directisfalse/
+/examples/step/ASM0001_ASM_1_ASM_directistrue/

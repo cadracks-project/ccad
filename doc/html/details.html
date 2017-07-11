@@ -1,0 +1,215 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Details &mdash; ccad 0.13 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ccad 0.13 documentation" href="index.html" />
+    <link rel="next" title="Modelling" href="modelling.html" />
+    <link rel="prev" title="Introduction" href="intro.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modelling.html" title="Modelling"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="contents.html">ccad 0.13 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Details</a><ul>
+<li><a class="reference internal" href="#internals">Internals</a></li>
+<li><a class="reference internal" href="#user-requirements">User Requirements</a></li>
+<li><a class="reference internal" href="#system-requirements">System Requirements</a></li>
+<li><a class="reference internal" href="#installation">Installation</a><ul>
+<li><a class="reference internal" href="#linux">Linux</a></li>
+<li><a class="reference internal" href="#windows">Windows</a></li>
+<li><a class="reference internal" href="#mac">Mac</a></li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#importing">Importing</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="intro.html"
+                        title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="modelling.html"
+                        title="next chapter">Modelling</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/details.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="details">
+<h1>Details<a class="headerlink" href="#details" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="internals">
+<h2>Internals<a class="headerlink" href="#internals" title="Permalink to this headline">¶</a></h2>
+<p>ccad is a python wrapper of pythonocc, which is a python wrapper of
+OpenCascade, an open source mechanical CAD math engine.  So why wrap
+python with more python?  pythonocc is a SWIG wrapper of a C++
+project.  Because of that, the syntax is fairly cumbersome.  The
+sphere instance from the introduction page looks like this in
+pythonocc:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">OCC.BRepPrimAPI</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">s1</span> <span class="o">=</span> <span class="n">BRepPrimAPI_Sphere</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)</span><span class="o">.</span><span class="n">Shape</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>ccad syntax is simpler, and allows you to focus more on design and
+less on syntax.  Put simply, pythonocc is more for CAD developers;
+ccad is more for CAD users.</p>
+<p>Unfortunately, ccad use comes with a cost.  Not all of pythonocc&#8217;s
+abilities are yet wrapped.  Therefore, it lacks the power of
+pythonocc.</p>
+<p>However, extending ccad isn&#8217;t too hard.  You can extend ccad with
+python calls to pythoncc.  No C or C++ coding is necessary.  We&#8217;re
+always looking for pythonocc-skilled people to extend ccad&#8217;s
+abilities.</p>
+</div>
+<div class="section" id="user-requirements">
+<h2>User Requirements<a class="headerlink" href="#user-requirements" title="Permalink to this headline">¶</a></h2>
+<p>You&#8217;ll need to know python reasonably well to use ccad.  Additionally,
+the <em>pydoc</em> generated documentation adds further detail to this
+manual.  Keep it handly.</p>
+</div>
+<div class="section" id="system-requirements">
+<h2>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this headline">¶</a></h2>
+<p>You&#8217;ll need pythonocc and python-qt4 to run ccad.</p>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="linux">
+<h3>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h3>
+<p>To install ccad, follow the following procedure in Linux:</p>
+<div class="highlight-python"><pre>tar xvzf ccad-ver.tar.gz (where ver is the version number)
+cd ccad-ver (where ver is the version number)
+python setup.py install --prefix=/usr/local (as root)</pre>
+</div>
+<p>Change the prefix argument to install in a different directory.</p>
+</div>
+<div class="section" id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
+<p>To install ccad, follow the following procedure in Windows:</p>
+<div class="highlight-python"><pre>tar xvzf ccad-ver.tar.gz (where ver is the version number)
+cd ccad-ver (where ver is the version number)
+python setup.py install</pre>
+</div>
+</div>
+<div class="section" id="mac">
+<h3>Mac<a class="headerlink" href="#mac" title="Permalink to this headline">¶</a></h3>
+<p>If you&#8217;re a Mac user, ccad should still work.  I just haven&#8217;t tried
+it.  If you successfully install ccad on Mac, let us know how you did
+it, and we&#8217;ll update the documentation.</p>
+</div>
+<div class="section" id="troubleshooting">
+<h3>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h3>
+<p>If you&#8217;re having trouble, simply extract the .tar.gz file.  Then, add
+that directory to your PYTHONPATH.  That, at least, will get you going.</p>
+</div>
+</div>
+<div class="section" id="importing">
+<h2>Importing<a class="headerlink" href="#importing" title="Permalink to this headline">¶</a></h2>
+<p>ccad consists of two modules: <strong>model</strong> and <strong>display</strong>.  As the names
+suggest, <strong>model</strong> models shapes, and <strong>display</strong> displays shapes.
+Usually, you import both at the front of your program:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">ccad.model</span> <span class="kn">as</span> <span class="nn">cm</span>
+<span class="kn">import</span> <span class="nn">ccad.display</span> <span class="kn">as</span> <span class="nn">cd</span>
+</pre></div>
+</div>
+<p>Then, you may model and display:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">s1</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">v1</span> <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">view</span><span class="p">()</span>
+<span class="n">v1</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Some users may prefer to write or use their own display.  In that
+case, the <strong>model</strong> module can be imported alone:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">ccad.model</span> <span class="kn">as</span> <span class="nn">cm</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modelling.html" title="Modelling"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             >previous</a> |</li>
+        <li><a href="contents.html">ccad 0.13 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014 by Charles Sharman and Others.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

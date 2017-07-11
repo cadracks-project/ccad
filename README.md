@@ -1,2 +1,0 @@
-# ccad
-PythonOCC wrapper 
