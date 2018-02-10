@@ -17,7 +17,6 @@ License
 Distributed under the GNU LESSER GENERAL PUBLIC LICENSE Version 3.
 View LICENSE for details.
 """
-
 from __future__ import print_function
 
 import logging
@@ -28,6 +27,7 @@ import re as _re  # Needed for svg
 import math as _math
 import urllib
 import imp
+import matplotlib.pyplot as plt
 
 import networkx as nx
 import numpy as np
@@ -113,8 +113,6 @@ logger = logging.getLogger(__name__)
 
 def _transform(s1, matrix):
     r"""
-    
-    
     Parameters
     ----------
     s1
@@ -1600,54 +1598,6 @@ def _raw_type(raw_shape):
         logger.warning(msg)
         return 'unknown'
 
-
-def signature(point_cloud):
-    r"""Signature of a point cloud using SVD (Singular Values Decomposition)
-
-    Parameters
-    ----------
-    point_cloud : 2D numpy array
-
-    Returns
-    -------
-    tuple :
-        sig : str
-        V
-        ptm : middle point / barycentre of the point cloud
-        q
-        vec
-        ang
-
-    """
-    logger.debug("**** Call to signature() ****")
-    pts = np.vstack((point_cloud[0, :], point_cloud[1, :], point_cloud[2, :])).T
-    logger.debug("Shape of pts : %s" % str(pts.shape))
-    ptm = np.mean(pts, axis=0)
-    logger.debug("Mean pt : %s" % str(ptm))
-    ptsm = pts - ptm
-    logger.debug("Shape of ptsm : %s" % str(ptsm.shape))  # should be as pts
-    U, S, V = np.linalg.svd(ptsm)
-    logger.debug("U shape : %s" % str(U.shape))  # rotation matrix (nb_pts x nb_pts)
-    logger.debug("S shape : %s" % str(S.shape))  # Diagonal matrix (3d vec)
-    logger.debug(str(S))
-    logger.debug("V shape : %s" % str(V.shape))  # rotation matrix (3x3)
-    logger.debug(str(V))
-
-    q = cq.Quaternion()
-    q.from_mat(V)
-    vec, ang = q.vecang()
-    logger.debug("Vec : %s" % str(vec))
-    logger.debug("Ang : %f" % ang)
-
-    S0 = str(int(np.ceil(S[0])))
-    S1 = str(int(np.ceil(S[1])))
-    S2 = str(int(np.ceil(S[2])))
-
-    sig = S0 + "_" + S1 + "_" + S2
-
-    return sig, V, ptm, q, vec, ang
-
-
 # Classes
 class Part(object):
     r"""Part class
@@ -2810,6 +2760,23 @@ class Wire(Shape):
         retval = retval + [ep[-1]]
         return retval
 
+    def plot(self,**kwargs):
+        """
+        pyplot figure of the Wire
+        """
+        if 'fig' in kwargs:
+            fig = kwargs.pop('fig')
+        else:
+            fig = plt.gcf()
+        if 'ax' in kwargs:
+            ax = kwargs.pop('ax')
+        else:
+            fig = plt.gca()
+
+        pts = np.array(self.poly())
+        ax.plot(pts[:,0],pts[:,1],**kwargs)
+
+        return fig,ax
 
 class Face(Shape):
     """
