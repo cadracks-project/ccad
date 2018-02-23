@@ -41,6 +41,6 @@ distutils.core.setup(name=name,
                      version=version,
                      url='UNKNOWN',
                      py_modules=['ccad.model', 'ccad.display'],
-                     package_dir={'ccad': '.'},
+                     package_dir={'ccad': './ccad'},
                      data_files=data_files,
                      requires=['OCC', 'PyQt4'])

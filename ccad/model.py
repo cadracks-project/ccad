@@ -104,8 +104,6 @@ from OCC import TopTools as _TopTools
 # is used to export an html/x3d representation (just like STEP, STL ...)
 from OCC.Display.WebGl.x3dom_renderer import X3DomRenderer
 
-import ccad.quaternions as cq
-
 logger = logging.getLogger(__name__)
 
 
@@ -2667,6 +2665,38 @@ class Edge(Shape):
         return retval
 
 
+    def plot(self,**kwargs):
+        """
+        pyplot figure of the Edge
+        """
+        if 'b3d' in kwargs:
+            b3d = kwargs.pop('b3d')
+        else:
+            b3d = False
+        if b3d:
+            from mpl_toolkits.mplot3d import Axes3D
+        if 'fig' in kwargs:
+            fig = kwargs.pop('fig')
+        else:
+            fig = plt.gcf()
+        if 'ax' in kwargs:
+            ax = kwargs.pop('ax')
+        else:
+            ax = fig.add_subplot(111)
+            if b3d:
+                ax = fig.add_subplot(111,projection='3d')
+
+        pts = np.array(self.poly())
+        if b3d:
+            ax.plot(pts[:,0],pts[:,1],pts[:,2],**kwargs)
+        else:
+            ax.plot(pts[:,0],pts[:,1],**kwargs)
+
+        ax.axis('equal')
+        ax.grid('on')
+
+        return fig,ax
+
 class Wire(Shape):
     """
     A connection of edges.  Can be instantiated with a list of edges
@@ -2762,8 +2792,14 @@ class Wire(Shape):
 
     def plot(self,**kwargs):
         """
-        pyplot figure of the Wire
+        pyplot figure of the Edge
         """
+        if 'b3d' in kwargs:
+            b3d = kwargs.pop('b3d')
+        else:
+            b3d = False
+        if b3d:
+            from mpl_toolkits.mplot3d import Axes3D
         if 'fig' in kwargs:
             fig = kwargs.pop('fig')
         else:
@@ -2771,19 +2807,27 @@ class Wire(Shape):
         if 'ax' in kwargs:
             ax = kwargs.pop('ax')
         else:
-            fig = plt.gca()
-
+            ax = fig.add_subplot(111)
+            if b3d:
+                ax = fig.add_subplot(111,projection='3d')
         pts = np.array(self.poly())
-        ax.plot(pts[:,0],pts[:,1],**kwargs)
+        if b3d:
+            ax.plot(pts[:,0],pts[:,1],pts[:,2],**kwargs)
+        else:
+            ax.plot(pts[:,0],pts[:,1],**kwargs)
+
+        ax.axis('equal')
+        ax.grid('on')
 
         return fig,ax
 
 class Face(Shape):
-    """
-    A continuous surface in 3d space bounded by a closed wire.
+    """ A continuous surface in 3d space bounded by a closed wire.
+
 
     Parameters
     ----------
+
     s : TopoDS_Face or TopoDS_Shape (of type face)
 
     """
