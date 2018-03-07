@@ -10,7 +10,7 @@ import ccad.display as cd
 
 logger = logging.getLogger(__name__)
 
-url = "https://raw.githubusercontent.com/guillaume-florent/standard-cad-parts/master/parts/rolling_bearings/scripts/"
+url = "https://raw.githubusercontent.com/osv-team/standard-cad-parts/master/parts/rolling_bearings/scripts/"
 # p, anchors = cm.Part.from_library(url=url, name="608ZZ")
 p, anchors = cm.Part.from_library(url=url, name="F63800ZZ")
 
