@@ -22,10 +22,17 @@ from __future__ import print_function
 import logging
 import os
 from os import path as _path
-import sys as _sys
+import sys
+if sys.version_info[0] < 3:
+    PY3 = False
+else:
+    PY3 = True
 import re as _re  # Needed for svg
 import math as _math
-import urllib
+if PY3 is True:
+    from urllib.request import urlopen
+else:
+    from urllib import urlopen
 import imp
 import matplotlib.pyplot as plt
 
@@ -92,7 +99,7 @@ from OCC.TopoDS import (topods_Edge as _TopoDS_edge,
                         TopoDS_Shape as _TopoDS_Shape)
 from OCC import TopoDS as _TopoDS
 from OCC.TopExp import (TopExp_Explorer as _TopExp_Explorer,
-                        topexp_MapShapesAndAncestors as 
+                        topexp_MapShapesAndAncestors as
                         _TopExp_MapShapesAndAncestors)
 from OCC.TopOpeBRep import (TopOpeBRep_FacesIntersector as
                             _TopOpeBRep_FacesIntersector)
@@ -1557,12 +1564,12 @@ def from_svg(name):
             elif cmd in cmds:  # Need to do these some time
                 # print('Error:', cmd, 'not implemented in path:', path)
                 logger.error(str(('Error:', cmd, 'not implemented in path:', path)))
-                _sys.exit()
+                sys.exit()
 
             else:
                 # print('Error: svg path type unknown', cmd)
                 logger.error(str(('Error: svg path type unknown', cmd)))
-                _sys.exit()
+                sys.exit()
 
         finish_wire()
     return retval
@@ -1691,7 +1698,7 @@ class Part(object):
         SyntaxError : if the name of the part does not exist
 
         """
-        response = urllib.urlopen("%s/%s.py" % (url, name))
+        response = urlopen("%s/%s.py" % (url, name))
         with open("tmp.py", "w") as tmp_py_file:
             for line in response.readlines():
                 tmp_py_file.write(line)
@@ -2343,7 +2350,7 @@ class Shape(object):
         """
         # print('Center not defined for', self.stype)
         logger.error('Center not defined for %s' % str(self.stype))
-        _sys.exit()
+        sys.exit()
 
     def subcenters(self, stype):
         """
@@ -3560,7 +3567,7 @@ def arc_ellipse(rad1, rad2, start_angle, end_angle):
         msg = 'Error: Major radius %s must be greater than minor radius %s' % \
               (str(rad1), str(rad2))
         logger.error(msg)
-        _sys.exit()
+        sys.exit()
     return Edge(_BRepBuilderAPI.BRepBuilderAPI_MakeEdge(
             _GC_MakeArcOfEllipse(
                 _gp.gp_Elips(_gp.gp_Ax2(_gp.gp_Pnt(0.0, 0.0, 0.0),
@@ -3689,7 +3696,7 @@ def ellipse(rad1, rad2):
         msg = 'Error: Major radius %s must be greater than minor radius %s' % \
               (str(rad1), str(rad2))
         logger.error(msg)
-        _sys.exit()
+        sys.exit()
     return Edge(_BRepBuilderAPI.BRepBuilderAPI_MakeEdge(
             _gp.gp_Elips(_gp.gp_Ax2(_gp.gp_Pnt(0.0, 0.0, 0.0),
                                     _gp.gp_Dir(0.0, 0.0, 1.0)),
@@ -3808,7 +3815,7 @@ def helix(rad, angle, turns, eps=1e-12):
     if abs(rem_parts) > eps:
         # print('Error: Fractional turns not currently supported.')
         logger.error('Error: Fractional turns not currently supported.')
-        _sys.exit()
+        sys.exit()
 
     # Calculate a quarter helix using a weighted bezier
     z0 = rad * full_angle * _math.tan(angle)
@@ -4379,7 +4386,7 @@ def plane_loft(ws, stype='Solid'):
             except NameError:
                 # print('Error: Not Planar')
                 logger.error('Error: Not Planar')
-                _sys.exit()
+                sys.exit()
                 # The loft must have slightly changed edges or vertices,
                 # because this was a mess.
                 # w1 = polygon([profiles[profile_index][pt_index],
