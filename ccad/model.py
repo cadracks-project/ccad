@@ -1699,7 +1699,8 @@ class Part(object):
 
         """
         response = urlopen("%s/%s.py" % (url, name))
-        with open("tmp.py", "w") as tmp_py_file:
+
+        with open("tmp.py", "wb") as tmp_py_file:
             for line in response.readlines():
                 tmp_py_file.write(line)
         # TODO : PY3 versions (imp is not PY3 compliant)
