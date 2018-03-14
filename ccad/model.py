@@ -21,6 +21,7 @@ from __future__ import print_function
 
 import logging
 import os
+import pdb
 from os import path as _path
 import sys
 if sys.version_info[0] < 3:
@@ -1110,9 +1111,11 @@ def simple_glue(s1, s2, face_pairs=[], tolerance=1e-3):
 
     Returns
     -------
+
     solid
 
     """
+
     s1f = s1._raw('Face')
     s2f = s2._raw('Face')
     f1rs = []
@@ -1609,6 +1612,7 @@ class Part(object):
 
     Notes
     -----
+
     A Part could be n solids : e.g. a bearing has two rings and n balls
 
     """
@@ -2048,28 +2052,43 @@ class Shape(object):
         else:
             w.Write(name)
 
-    def to_html(self, filename_html):
+    def to_html(self, filename_html,color=(0.65,0.65,0.65)):
         r"""Generates an html file to view the Shape in the browser
 
         Parameters
         ----------
         filename_html : str
             name of the html file
+        color : tuple
+            (0.65,0.65,0.65)
         """
         class X3DomRendererCustomized(X3DomRenderer):
             r"""Customized version of X3DomRenderer where the html file name can
             be specified"""
             def __init__(self, path_, background_color="#123345"):
                 # Intentionally not calling super constructor
+                super(X3DomRendererCustomized,self).__init__()
                 self._background_color = background_color
                 name_no_extension, _ = os.path.splitext(os.path.basename(path_))
-                self._folder_path = os.path.dirname(path_)
-                self._x3d_filename = os.path.join(self._folder_path,
+                self._path = os.path.dirname(path_)
+                self._x3d_filename = os.path.join(self._path,
                                                   '%s.x3d' % name_no_extension)
                 self._html_filename = path_
 
         renderer = X3DomRendererCustomized(path_=filename_html)
-        renderer.create_files(shape=self.shape)
+        renderer.DisplayShape(self.shape
+                              vertex_shader=None,
+                              fragment_shader=None,
+                              export_edges=False,
+                              color=color,
+                              specular_color=(1, 1, 1),
+                              shininess=0.9,
+                              transparency=0.,
+                              line_color=(0, 0., 0.),
+                              line_width=2.,
+                              mesh_quality = 1.)
+
+        renderer.GenerateHTMLFile()
 
     def transform(self, matrix):
         """
@@ -2674,13 +2693,15 @@ class Edge(Shape):
 
 
     def plot(self,**kwargs):
+        """ pyplot figure of the Edge
+
+        Paramters
+        ---------
+
+        b3d : boolean
+
         """
-        pyplot figure of the Edge
-        """
-        if 'b3d' in kwargs:
-            b3d = kwargs.pop('b3d')
-        else:
-            b3d = False
+        b3d = kwargs.pop('b3d',False)
         if b3d:
             from mpl_toolkits.mplot3d import Axes3D
         if 'fig' in kwargs:
@@ -2694,14 +2715,25 @@ class Edge(Shape):
             if b3d:
                 ax = fig.add_subplot(111,projection='3d')
 
+        bgrid = kwargs.pop('bgrid',True)
+        fontsize = kwargs.pop('fontsize',18)
+
         pts = np.array(self.poly())
+
         if b3d:
             ax.plot(pts[:,0],pts[:,1],pts[:,2],**kwargs)
         else:
             ax.plot(pts[:,0],pts[:,1],**kwargs)
 
-        ax.axis('equal')
-        ax.grid('on')
+        lbx = ax.get_xticklabels()
+        lby = ax.get_yticklabels()
+        for t in lbx:
+            t.set_fontsize(fontsize)
+        for t in lby:
+            t.set_fontsize(fontsize)
+
+        if bgrid:
+            ax.grid('on')
 
         return fig,ax
 
@@ -2818,6 +2850,9 @@ class Wire(Shape):
             ax = fig.add_subplot(111)
             if b3d:
                 ax = fig.add_subplot(111,projection='3d')
+
+        bgrid = kwargs.pop('bgrid',True)
+        fontsize = kwargs.pop('fontsize',18)
         pts = np.array(self.poly())
         if b3d:
             ax.plot(pts[:,0],pts[:,1],pts[:,2],**kwargs)
@@ -2825,7 +2860,16 @@ class Wire(Shape):
             ax.plot(pts[:,0],pts[:,1],**kwargs)
 
         ax.axis('equal')
-        ax.grid('on')
+
+        lbx = ax.get_xticklabels()
+        lby = ax.get_yticklabels()
+        for t in lbx:
+            t.set_fontsize(fontsize)
+        for t in lby:
+            t.set_fontsize(fontsize)
+
+        if bgrid:
+            ax.grid('on')
 
         return fig,ax
 
@@ -2998,7 +3042,9 @@ class Shell(Shape):
 
     Parameters
     ----------
+
     s : iterable[Face] or TopoDS_Shell or TopoDS_Shape (of type shell)
+
     """
 
     stype = 'Shell'
@@ -4499,6 +4545,7 @@ def helical_solid(profile, rad, angle, turns):
 
     Parameters
     ----------
+
     profile :
     rad : float
         Helix radius
@@ -4508,6 +4555,7 @@ def helical_solid(profile, rad, angle, turns):
 
     Returns
     -------
+
     Solid
 
     """
