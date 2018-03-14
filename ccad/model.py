@@ -2076,7 +2076,7 @@ class Shape(object):
                 self._html_filename = path_
 
         renderer = X3DomRendererCustomized(path_=filename_html)
-        renderer.DisplayShape(self.shape
+        renderer.DisplayShape(self.shape,
                               vertex_shader=None,
                               fragment_shader=None,
                               export_edges=False,
