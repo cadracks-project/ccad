@@ -859,14 +859,15 @@ def old_common(s1, s2):
 def _fillet_boolean(b1, rad):
     r"""
 
-
     Parameters
     ----------
-    b1
-    rad
+
+    b1 :
+    rad :
 
     Returns
     -------
+
     A solid
 
     """
@@ -876,7 +877,9 @@ def _fillet_boolean(b1, rad):
     while iterator.More():
         b2.Add(rad, _TopoDS_edge(iterator.Value()))
         iterator.Next()
-    return Solid(b2.Shape())
+    b3 = b2.Shape()
+    pdb.set_trace()
+    return Solid(b3)
 
 
 def fillet_fuse(s1, s2, rad):
