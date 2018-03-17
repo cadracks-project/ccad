@@ -74,7 +74,7 @@ from OCC.Core.TopExp import TopExp_Explorer as _TopExp_Explorer
 
 # Use Viewer3d, a subclass of Display3d
 # from OCC.Visualization import Display3d as _Display3d
-from OCC.Core.Display.OCCViewer import Viewer3d as _Display3d
+from OCC.Display.OCCViewer import Viewer3d as _Display3d
 
 from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
 from OCC.Core.Prs3d import Prs3d_Arrow, Prs3d_Presentation

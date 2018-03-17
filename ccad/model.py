@@ -2775,7 +2775,8 @@ class Wire(Shape):
         st = ''
         pts = np.array(self.poly())
         for pt in pts:
-            st = st + str(pt)+'\n'
+            st = st + '%.2f %.2f %.2f' % (pt[0],pt[1],pt[2]) + '\n'
+        st = st  + 'Length : %2.f' % self.length() + '\n'
         return st
 
     def center(self):
@@ -2907,7 +2908,12 @@ class Face(Shape):
         st = ''
         wire = self.wire()
         st = st + wire.__repr__()
+        st = st + 'Area  : %.3f' % self.area() + '\n'
 
+        return(st)
+
+    def plot(self,**kwargs):
+        self.wire().plot(**kwargs)
 
     def fillet(self, rad, vertex_indices=None):
         """
