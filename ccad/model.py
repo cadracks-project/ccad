@@ -42,54 +42,54 @@ import numpy as np
 
 # from OCC.ChFi3d import *
 # from OCC.BlockFix import *
-from OCC.Bnd import Bnd_Box as _Bnd_Box
+from OCC.Core.Bnd import Bnd_Box as _Bnd_Box
 # from OCC.BOP import *
-from OCC.BRep import (BRep_Builder as _BRep_Builder, BRep_Tool as _BRep_Tool,
+from OCC.Core.BRep import (BRep_Builder as _BRep_Builder, BRep_Tool as _BRep_Tool,
                       BRep_Tool_Surface as _BRep_Tool_Surface)
-from OCC import BRepAlgo as _BRepAlgo
-from OCC import BRepAlgoAPI as _BRepAlgoAPI
-from OCC.BRepBndLib import brepbndlib_Add as _brepbndlib_Add
-from OCC import BRepBuilderAPI as _BRepBuilderAPI
-from OCC.BRepCheck import BRepCheck_Analyzer as _BRepCheck_Analyzer
-from OCC.BRepFeat import BRepFeat_Gluer as _BRepFeat_Gluer
-from OCC import BRepFilletAPI as _BRepFilletAPI
-from OCC.BRepGProp import\
+from OCC.Core import BRepAlgo as _BRepAlgo
+from OCC.Core import BRepAlgoAPI as _BRepAlgoAPI
+from OCC.Core.BRepBndLib import brepbndlib_Add as _brepbndlib_Add
+from OCC.Core import BRepBuilderAPI as _BRepBuilderAPI
+from OCC.Core.BRepCheck import BRepCheck_Analyzer as _BRepCheck_Analyzer
+from OCC.Core.BRepFeat import BRepFeat_Gluer as _BRepFeat_Gluer
+from OCC.Core import BRepFilletAPI as _BRepFilletAPI
+from OCC.Core.BRepGProp import\
     (brepgprop_VolumeProperties as _brepgprop_VolumeProperties,
      brepgprop_LinearProperties as _brepgprop_LinearProperties,
      brepgprop_SurfaceProperties as _brepgprop_SurfaceProperties)
-from OCC import BRepOffsetAPI as _BRepOffsetAPI
-from OCC import BRepOffset as _BRepOffset
-from OCC import BRepPrimAPI as _BRepPrimAPI
-from OCC import BRepTools as _BRepTools
-from OCC.BRepTools import (breptools_Read as _breptools_Read,
+from OCC.Core import BRepOffsetAPI as _BRepOffsetAPI
+from OCC.Core import BRepOffset as _BRepOffset
+from OCC.Core import BRepPrimAPI as _BRepPrimAPI
+from OCC.Core import BRepTools as _BRepTools
+from OCC.Core.BRepTools import (breptools_Read as _breptools_Read,
                            breptools_Write as _breptools_Write)
-from OCC.GC import (GC_MakeArcOfCircle as _GC_MakeArcOfCircle,
+from OCC.Core.GC import (GC_MakeArcOfCircle as _GC_MakeArcOfCircle,
                     GC_MakeArcOfEllipse as _GC_MakeArcOfEllipse)
-from OCC.GCPnts import (GCPnts_QuasiUniformDeflection as
+from OCC.Core.GCPnts import (GCPnts_QuasiUniformDeflection as
                         _GCPnts_QuasiUniformDeflection)
-from OCC.Geom import Geom_BezierCurve as _Geom_BezierCurve
-from OCC import GeomAbs as _GeomAbs
-from OCC.GeomAdaptor import (GeomAdaptor_Curve as _GeomAdaptor_Curve,
+from OCC.Core.Geom import Geom_BezierCurve as _Geom_BezierCurve
+from OCC.Core import GeomAbs as _GeomAbs
+from OCC.Core.GeomAdaptor import (GeomAdaptor_Curve as _GeomAdaptor_Curve,
                              GeomAdaptor_Surface as _GeomAdaptor_Surface)
-from OCC.GeomAPI import GeomAPI_PointsToBSpline as _GeomAPI_PointsToBSpline
-from OCC import gp as _gp
-from OCC.GProp import GProp_GProps as _GProp_GProps
-from OCC import IFSelect as _IFSelect
-from OCC.IGESControl import (IGESControl_Controller as _IGESControl_Controller,
+from OCC.Core.GeomAPI import GeomAPI_PointsToBSpline as _GeomAPI_PointsToBSpline
+from OCC.Core import gp as _gp
+from OCC.Core.GProp import GProp_GProps as _GProp_GProps
+from OCC.Core import IFSelect as _IFSelect
+from OCC.Core.IGESControl import (IGESControl_Controller as _IGESControl_Controller,
                              IGESControl_Reader as _IGESControl_Reader,
                              IGESControl_Writer as _IGESControl_Writer)
-from OCC.Interface import (
+from OCC.Core.Interface import (
             Interface_Static_SetCVal as _Interface_Static_SetCVal,
             Interface_Static_SetIVal as _Interface_Static_SetIVal,
             Interface_Static_SetRVal as _Interface_Static_SetRVal)
-from OCC.LocOpe import LocOpe_FindEdges as _LocOpe_FindEdges
-from OCC.ShapeFix import ShapeFix_Shape as _ShapeFix_Shape
-from OCC import STEPControl as _STEPControl
-from OCC.StlAPI import StlAPI_Writer as _StlAPI_Writer
-from OCC.TColgp import TColgp_Array1OfPnt as _TColgp_Array1OfPnt
-from OCC.TColStd import TColStd_Array1OfReal as _TColStd_Array1OfReal
-from OCC import TopAbs as _TopAbs
-from OCC.TopoDS import (topods_Edge as _TopoDS_edge,
+from OCC.Core.LocOpe import LocOpe_FindEdges as _LocOpe_FindEdges
+from OCC.Core.ShapeFix import ShapeFix_Shape as _ShapeFix_Shape
+from OCC.Core import STEPControl as _STEPControl
+from OCC.Core.StlAPI import StlAPI_Writer as _StlAPI_Writer
+from OCC.Core.TColgp import TColgp_Array1OfPnt as _TColgp_Array1OfPnt
+from OCC.Core.TColStd import TColStd_Array1OfReal as _TColStd_Array1OfReal
+from OCC.Core import TopAbs as _TopAbs
+from OCC.Core.TopoDS import (topods_Edge as _TopoDS_edge,
                         topods_Face as _TopoDS_face,
                         topods_Solid as _TopoDS_solid,
                         topods_Shell as _TopoDS_shell,
@@ -98,15 +98,15 @@ from OCC.TopoDS import (topods_Edge as _TopoDS_edge,
                         topods_Vertex as _TopoDS_vertex,
                         topods_Wire as _TopoDS_wire,
                         TopoDS_Shape as _TopoDS_Shape)
-from OCC import TopoDS as _TopoDS
-from OCC.TopExp import (TopExp_Explorer as _TopExp_Explorer,
+from OCC.Core import TopoDS as _TopoDS
+from OCC.Core.TopExp import (TopExp_Explorer as _TopExp_Explorer,
                         topexp_MapShapesAndAncestors as
                         _TopExp_MapShapesAndAncestors)
-from OCC.TopOpeBRep import (TopOpeBRep_FacesIntersector as
+from OCC.Core.TopOpeBRep import (TopOpeBRep_FacesIntersector as
                             _TopOpeBRep_FacesIntersector)
-from OCC.TopOpeBRepTool import (TopOpeBRepTool_FuseEdges as
+from OCC.Core.TopOpeBRepTool import (TopOpeBRepTool_FuseEdges as
                                 _TopOpeBRepTool_FuseEdges)
-from OCC import TopTools as _TopTools
+from OCC.Core import TopTools as _TopTools
 
 # Even though this might look like mixing model and display code, X3DomRenderer
 # is used to export an html/x3d representation (just like STEP, STL ...)
@@ -878,7 +878,6 @@ def _fillet_boolean(b1, rad):
         b2.Add(rad, _TopoDS_edge(iterator.Value()))
         iterator.Next()
     b3 = b2.Shape()
-    pdb.set_trace()
     return Solid(b3)
 
 
@@ -2772,6 +2771,13 @@ class Wire(Shape):
         else:
             raise TypeError
 
+    def __repr__(self):
+        st = ''
+        pts = np.array(self.poly())
+        for pt in pts:
+            st = st + str(pt)+'\n'
+        return st
+
     def center(self):
         r"""
 
@@ -2879,7 +2885,6 @@ class Wire(Shape):
 class Face(Shape):
     """ A continuous surface in 3d space bounded by a closed wire.
 
-
     Parameters
     ----------
 
@@ -2896,6 +2901,13 @@ class Face(Shape):
             self.shape = _TopoDS_face(s)
         else:
             raise TypeError
+
+    def __repr__(self):
+
+        st = ''
+        wire = self.wire()
+        st = st + wire.__repr__()
+
 
     def fillet(self, rad, vertex_indices=None):
         """
@@ -3068,13 +3080,26 @@ class Shell(Shape):
         else:
             raise TypeError
 
+    def __repr__(self):
+        subs = self.subshapes('Face')
+        for sub in subs:
+            pass
+
+        return(st)
+
     def center(self):
-        r"""
+        r""" determine Shell center
 
         Returns
         -------
         tuple[float]
             The center coordinates
+
+        Notes
+        -----
+
+        Take all Faces from the Shell
+        For each Face calculate its area and center
 
         """
         subs = self.subshapes('Face')
@@ -3087,7 +3112,10 @@ class Shell(Shape):
                  c[1] + area * sub_center[1],
                  c[2] + area * sub_center[2])
             total_area = total_area + area
-        c = (c[0] / total_area, c[1] / total_area, c[2] / total_area)
+        if total_area!=0:
+            c = (c[0] / total_area, c[1] / total_area, c[2] / total_area)
+        else:
+            pdb.set_trace()
         return c
 
     def area(self):
