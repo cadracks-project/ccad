@@ -58,27 +58,27 @@ attribute.  For example:
     start_display()
 """)
 
-from OCC import (AIS as _AIS, Aspect as _Aspect, gp as _gp,
+from OCC.Core import (AIS as _AIS, Aspect as _Aspect, gp as _gp,
                  Graphic3d as _Graphic3d, Prs3d as _Prs3d,
                  Quantity as _Quantity, TopAbs as _TopAbs, V3d as _V3d)
-from OCC.BRepTools import BRepTools_WireExplorer as _BRepTools_WireExplorer
-from OCC.HLRAlgo import HLRAlgo_Projector as _HLRAlgo_Projector
-from OCC.HLRBRep import (HLRBRep_Algo as _HLRBRep_Algo,
+from OCC.Core.BRepTools import BRepTools_WireExplorer as _BRepTools_WireExplorer
+from OCC.Core.HLRAlgo import HLRAlgo_Projector as _HLRAlgo_Projector
+from OCC.Core.HLRBRep import (HLRBRep_Algo as _HLRBRep_Algo,
                          HLRBRep_HLRToShape as _HLRBRep_HLRToShape)
 # from OCC.TCollection import (TCollection_ExtendedString as
 #                                                   TCollection_ExtendedString)
-from OCC.TopExp import TopExp_Explorer as _TopExp_Explorer
+from OCC.Core.TopExp import TopExp_Explorer as _TopExp_Explorer
 
 # TODO : the following import breaks when migrating from OCC 0.16.2 to 0.17
 # from OCC.Visual3d import Visual3d_ViewOrientation as _Visual3d_ViewOrientation
 
 # Use Viewer3d, a subclass of Display3d
 # from OCC.Visualization import Display3d as _Display3d
-from OCC.Display.OCCViewer import Viewer3d as _Display3d
+from OCC.Core.Display.OCCViewer import Viewer3d as _Display3d
 
-from OCC.gp import gp_Pnt, gp_Vec, gp_Dir
-from OCC.Prs3d import Prs3d_Arrow, Prs3d_Presentation
-from OCC.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
+from OCC.Core.gp import gp_Pnt, gp_Vec, gp_Dir
+from OCC.Core.Prs3d import Prs3d_Arrow, Prs3d_Presentation
+from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
 
 try:
     import ccad.model as _cm
