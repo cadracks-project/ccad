@@ -2613,6 +2613,12 @@ class Edge(Shape):
         else:
             raise TypeError
 
+    def __repr__(self):
+        st = ''
+        pt = self.poly()
+        st = st + '(%.2f %.2f %.2f) -> (%.2f %.2f %.2f)' % (pt[0][0],pt[0][1],pt[0][2],pt[1][0],pt[1][1],pt[1][2]) +'\n'
+        return(st)
+
     def center(self):
         r"""
 
@@ -2672,16 +2678,17 @@ class Edge(Shape):
                 _GeomAbs.GeomAbs_OtherCurve: 'other'}[t1]
 
     def poly(self, deflection=1e-3):
-        """
-        Returns a polyline approximation to the edge
+        """ Returns a polyline approximation to the edge
 
         Parameters
         ----------
         deflection : float, optional (default is 1e-3)
 
+
         Returns
         -------
         list[tuple[float]]
+
 
         """
         c1 = _BRep_Tool.Curve(_TopoDS_edge(self.shape))
@@ -2740,8 +2747,7 @@ class Edge(Shape):
         return fig,ax
 
 class Wire(Shape):
-    """
-    A connection of edges.  Can be instantiated with a list of edges
+    """ A connection of edges.  Can be instantiated with a list of edges
     to connect.
 
     Parameters
@@ -2773,10 +2779,18 @@ class Wire(Shape):
 
     def __repr__(self):
         st = ''
-        pts = np.array(self.poly())
-        for pt in pts:
-            st = st + '%.2f %.2f %.2f' % (pt[0],pt[1],pt[2]) + '\n'
+        #pts = np.array(self.poly())
+        #N = pts.shape[0]
+        #for k,pt in enumerate(pts):
+        #    if k<(N-1):
+        #        st = st + '(%.2f %.2f %.2f)' % (pt[0],pt[1],pt[2]) + ' , '
+        #    else:
+        #        st = st + '(%.2f %.2f %.2f)' % (pt[0],pt[1],pt[2]) 
+
         st = st  + 'Length : %2.f' % self.length() + '\n'
+        edges = self.subshapes('Edge')
+        for edge in edges:
+            st = st + edge.__repr__()
         return st
 
     def center(self):
@@ -2907,8 +2921,9 @@ class Face(Shape):
 
         st = ''
         wire = self.wire()
+        st = st + 'Area : %.3f' % self.area() + '\n'
         st = st + wire.__repr__()
-        st = st + 'Area  : %.3f' % self.area() + '\n'
+        st = st+'\n'
 
         return(st)
 
@@ -3087,9 +3102,11 @@ class Shell(Shape):
             raise TypeError
 
     def __repr__(self):
+        st = 'Shell\n_____\n'
         subs = self.subshapes('Face')
-        for sub in subs:
-            pass
+        for k,sub in enumerate(subs):
+            st = st + 'Face : %d' % k+'\n'
+            st = st + sub.__repr__()
 
         return(st)
 
