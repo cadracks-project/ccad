@@ -3165,6 +3165,7 @@ class Solid(Shape):
     Parameters
     ----------
     ss : iterable[Face] or TopoDS_Solid or TopoDS_Shape (of type solid, compound or compsolid)
+
     """
 
     stype = 'Solid'
@@ -3188,6 +3189,13 @@ class Solid(Shape):
                 raise TypeError
         else:
             raise TypeError
+
+    def __repr__(self):
+        st = 'Volume : ' + '%.3f' % self.volume() + '\n'
+        lfaces = self.subshapes('Face')
+        for face in lfaces:
+            st = st + face.__repr__()
+        return(st)
 
     def __add__(self, other):
         return fuse(self, other)
