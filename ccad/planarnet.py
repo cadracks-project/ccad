@@ -117,7 +117,7 @@ class PlanarNet(nx.Graph):
 
         """
         for edge in self.edges():
-            if0  = edge[0]
+            if0 = edge[0]
             if1 = edge[1]
             ag = self.edge[if0][if1]['angle']
             iedge = self.edge[if0][if1]['iedge']
@@ -125,7 +125,19 @@ class PlanarNet(nx.Graph):
             points = ed.poly()
             pdir = np.array(points[1]) - np.array(points[0])
             pabout = ed.center()
-            self.lfaces[if1] = cm.rotated(self.lfaces[if1],pabout,pdir,ag)
+            print(if0,if1,pdir,ag)
+
+            self.remove_edge(if0,if1)
+            lgraphs = list(nx.connected_component_subgraphs(nx.Graph(self)))
+            ln0 = lgraphs[0].node.keys()
+            ln1 = lgraphs[1].node.keys()
+            self.add_edge(if0,if1)
+            if if1 in ln1:
+                lfaces1 = ln1
+            else:
+                lfaces1 = ln0
+            for f in lfaces1:
+                self.lfaces[f] = cm.rotated(self.lfaces[f],pabout,pdir,ag)
 
         # update faces centroid
         for iface in self.node:
