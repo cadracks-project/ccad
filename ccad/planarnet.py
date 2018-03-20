@@ -200,5 +200,5 @@ if __name__ == "__main__":
     p1.tile(iedge=0, angle = alpha)
     p1.tile(iedge=1, angle = alpha)
     p1.tile(iedge=2, angle = alpha)
-    p1.fold()
-    p1.shell.to_html('f1.html')
+    tetra = p1.fold()
+    tetra.to_html('tetraedre.html')
