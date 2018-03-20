@@ -2587,7 +2587,9 @@ class Vertex(Shape):
 
     def __repr__(self):
         st = ''
-        st = st + ".3f,.3f,.3f" % self.center()
+        x,y,z = self.center()
+        st = st + "%.3f,%.3f,%.3f" % (x,y,z)
+        return st
 
     def center(self):
         r"""Center

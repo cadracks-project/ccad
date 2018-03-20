@@ -47,9 +47,37 @@ class PlanarNet(nx.Graph):
             st = st + f.__repr__()
         return st
 
+    def __add__(self,other):
+        new = PlanarNet()
+        new.lfaces = self.lfaces + other.lfaces
+        new.shell = cm.Shell(new.lfaces)
+        return new
+
+    def __copy__(self):
+        return(self)
+
+    def translated(self,pdir):
+        """
+        """
+        pass
+
+    def rotated(self,pabout,angle):
+        pass
+
+
     def plot(self):
         for f in self.lfaces:
             f.plot()
+            for k,e in enumerate(f.subshapes('Edge')):
+                eps = self.l/15.
+                xe , ye = e.center()[0:2]
+                lv = e.subshapes('Vertex')
+                p0 = np.array(lv[0].center())
+                p1 = np.array(lv[1].center())
+                pdir = p1-p0
+                norm = np.cross(pdir,np.array([0,0,1]))
+                norm = norm/np.linalg.norm(norm)
+                plt.annotate(str(k),xy=(xe,ye),xytext=(xe-norm[0]*eps,ye-norm[1]*eps),color='b')
         nx.draw_networkx_nodes(self,self.pos,node_color='b',node_size=50,alpha=0.5)
         nx.draw_networkx_edges(self,self.pos,width=3,edge_color='k')
         lpos = { k : (self.pos[k][0]+0.05,self.pos[k][1]+0.05) for k in self.pos}
@@ -81,7 +109,7 @@ class PlanarNet(nx.Graph):
         self.add_node(self.nnode)
         self.pos[self.nnode] = new_face.center()[0:2]
         self.add_edge(iface,self.nnode,angle=angle,iedge=iedge)
-        #print(lface)
+        self.shell = cm.Shell(self.lfaces)
 
     def unfold(self):
         """ unfold edges of the PlanarNet
@@ -119,7 +147,13 @@ class PlanarNet(nx.Graph):
         Returns
         -------
 
-        solid : A Solid
+        A solid or a coumpound of faces
+
+        Notes
+        -----
+
+        This method fold the planar net w.r.t to the edge angles.
+        It yields a shell member
 
         """
         for edge in self.edges():
@@ -144,23 +178,20 @@ class PlanarNet(nx.Graph):
             for f in lfaces1:
                 self.lfaces[f] = cm.rotated(self.lfaces[f],pabout,pdir,ag)
 
-        # update faces centroid
+        # update faces centroid in the Graph
+
         for iface in self.node:
             face = self.lfaces[iface]
             self.pos[iface] = face.center()[0:2]
 
-        for k,f in enumerate(self.lfaces):
-            print(k,f.center())
-
+        # creates the shell
         self.shell = cm.Shell(self.lfaces)
-        # A ce stade le self.shell.shape est déjà incorrect
-
-        for k,f in enumerate(self.shell.subshapes('Face')):
-            print(k,f.center())
 
         self.folded = True
 
-            #self.lface[edge[0]print edge
+        asolid = cm.Solid([self.shell])
+
+        return asolid
 
 
 if __name__ == "__main__":
