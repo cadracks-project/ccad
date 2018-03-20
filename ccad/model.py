@@ -2585,6 +2585,10 @@ class Vertex(Shape):
         else:
             raise TypeError
 
+    def __repr__(self):
+        st = ''
+        st = st + ".3f,.3f,.3f" % self.center()
+
     def center(self):
         r"""Center
 
