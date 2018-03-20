@@ -1,6 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import ccad.model as cm
+import ccad.display as cd
 import numpy as np
 import pdb
 
@@ -68,6 +69,9 @@ class PlanarNet(nx.Graph):
         axed = np.cross(vedge,np.array([0,0,1]))
         # mirror new face w.r.t axed
         new_face = cm.mirrored(new_face,ed.center(),axed)
+        # modify normal orientation
+        new_face = cm.rotated(new_face,new_face.center(),(1,0,0),np.pi)
+
 
         # append new face in PlanarNet.lfaces
         # update underlying graph
@@ -81,6 +85,8 @@ class PlanarNet(nx.Graph):
 
     def unfold(self):
         """ unfold edges of the PlanarNet
+
+        TODO : mimic fold implementation
 
         Returns
         -------
@@ -125,7 +131,6 @@ class PlanarNet(nx.Graph):
             points = ed.poly()
             pdir = np.array(points[1]) - np.array(points[0])
             pabout = ed.center()
-            print(if0,if1,pdir,ag)
 
             self.remove_edge(if0,if1)
             lgraphs = list(nx.connected_component_subgraphs(nx.Graph(self)))
@@ -144,7 +149,15 @@ class PlanarNet(nx.Graph):
             face = self.lfaces[iface]
             self.pos[iface] = face.center()[0:2]
 
+        for k,f in enumerate(self.lfaces):
+            print(k,f.center())
+
         self.shell = cm.Shell(self.lfaces)
+        # A ce stade le self.shell.shape est déjà incorrect
+
+        for k,f in enumerate(self.shell.subshapes('Face')):
+            print(k,f.center())
+
         self.folded = True
 
             #self.lface[edge[0]print edge

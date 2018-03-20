@@ -68,6 +68,7 @@ from OCC.Core.GC import (GC_MakeArcOfCircle as _GC_MakeArcOfCircle,
 from OCC.Core.GCPnts import (GCPnts_QuasiUniformDeflection as
                         _GCPnts_QuasiUniformDeflection)
 from OCC.Core.Geom import Geom_BezierCurve as _Geom_BezierCurve
+from OCC.Core.Geom import Handle_Geom_Plane_DownCast,Geom_Plane
 from OCC.Core import GeomAbs as _GeomAbs
 from OCC.Core.GeomAdaptor import (GeomAdaptor_Curve as _GeomAdaptor_Curve,
                              GeomAdaptor_Surface as _GeomAdaptor_Surface)
@@ -113,7 +114,6 @@ from OCC.Core import TopTools as _TopTools
 from OCC.Display.WebGl.x3dom_renderer import X3DomRenderer
 
 logger = logging.getLogger(__name__)
-
 
 # Shape Functions
 
@@ -1106,15 +1106,15 @@ def simple_glue(s1, s2, face_pairs=[], tolerance=1e-3):
 
     Parameters
     ----------
-    s1
-    s2
+    s1 : Solid
+    s2 : Solid
     face_pairs : list, optional (default is an empty list)
     tolerance : float, optional (default is 1e-3)
 
     Returns
     -------
 
-    solid
+    Solid
 
     """
 
@@ -1298,7 +1298,7 @@ def from_svg(name):
             del local_wire[:]
 
     def strpt_to_float(strpt):
-        r"""<tbc>
+        r""" string point to float 
 
         Parameters
         ----------
@@ -1344,8 +1344,8 @@ def from_svg(name):
 
         Parameters
         ----------
-        u
-        v
+        u : vector
+        v : vector
 
         Returns
         -------
@@ -1741,6 +1741,8 @@ class Assembly(object):
         If True, directly use the point cloud of the Shell
         If False, iterate the faces, wires and then vertices
 
+    TODO : To Be remove ( redundant with recersy)
+
     """
     def __init__(self, shape, origin=None, direct=False):
         self.shape = shape
@@ -1845,7 +1847,12 @@ class Assembly(object):
 
 class Shape(object):
     """
-    A base class for all shapes: edge, wire, face, shell, solid.
+        A base class for all shapes:
+            edge
+            wire
+            face
+            shell
+            solid
     """
 
     def _raw_type(self):
@@ -2264,7 +2271,9 @@ class Shape(object):
                      'Wire': _TopAbs.TopAbs_WIRE,
                      'Face': _TopAbs.TopAbs_FACE,
                      'Shell': _TopAbs.TopAbs_SHELL,
-                     'Solid': _TopAbs.TopAbs_SOLID}
+                     'Solid': _TopAbs.TopAbs_SOLID,
+                     'Compound':_TopAbs.TopAbs_COMPOUND,
+                     'Compsolid':_TopAbs.TopAbs_COMPSOLID}
         # This returns OCC types, not ccad types
         if self.stype == 'Wire' and raw_type == 'Edge':
             # Ordered this way
@@ -3012,6 +3021,29 @@ class Face(Shape):
             ex1w.Next()
         return retval
 
+    def normal(self):
+        """ determine the face normal
+        TODO : Implement is using OCC primitive
+        """
+        w = self.subshapes('Wire')
+        e = self.subshapes('Edge')
+        pt = e[0].poly()
+        p0 = np.array([pt[0][0],pt[0][1],pt[0][2]])
+        p1 = np.array([pt[1][0],pt[1][1],pt[1][2]])
+        v0 = p1-p0
+        pt = e[1].poly()
+        p0 = np.array([pt[0][0],pt[0][1],pt[0][2]])
+        p1 = np.array([pt[1][0],pt[1][1],pt[1][2]])
+        v1 = p1-p0
+        n = np.cross(v0,v1)
+        n = n/np.linalg.norm(n)
+        return n
+        #surf = _BRep_Tool_Surface(_Topo(self.shape).face())
+        #pl = Handle_Geom_Plane_DownCast(surf)
+        #pln = pl.GetObject()
+        #norm = pln.Axis().Direction()
+        return(norm)
+
     def center(self):
         r"""
 
@@ -3089,10 +3121,13 @@ class Shell(Shape):
         if isinstance(fs, (list, tuple)):
             b = _BRepBuilderAPI.BRepBuilderAPI_Sewing(tolerance)
             for f in fs:
+                #print(f.center())
                 b.Add(f.shape)
             b.Perform()
+            # fix
             self.shape = b.SewedShape()
             # print('sewing type:', self._raw_type())
+
             logger.info('sewing type: %s ' % str(self._raw_type()))
         elif isinstance(fs, _TopoDS.TopoDS_Shell):
             self.shape = fs
