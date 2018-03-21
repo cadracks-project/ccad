@@ -2936,8 +2936,10 @@ class Face(Shape):
 
         st = ''
         wire = self.wire()
-        st = st + 'Area : %.3f' % self.area() + '\n'
-        st = st + wire.__repr__()
+        st = st + 'Area : %.3f' % self.area() 
+        pc = self.center()
+        st = st + "   Center : %.3f, %.3f , %.3f" % (pc[0],pc[1],pc[2])
+        #st = st + wire.__repr__()
         st = st+'\n'
 
         return(st)
