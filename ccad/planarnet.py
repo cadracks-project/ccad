@@ -99,9 +99,9 @@ class PlanarNet(nx.Graph):
         pass
 
 
-    def plot(self):
+    def plot(self,**kwargs):
         for f in self.lfaces:
-            f.plot()
+            f.plot(**kwargs)
             for k,e in enumerate(f.subshapes('Edge')):
                 eps = self.l/15.
                 xe , ye = e.center()[0:2]
