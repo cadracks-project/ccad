@@ -119,13 +119,16 @@ logger = logging.getLogger(__name__)
 
 def _transform(s1, matrix):
     r"""
+
     Parameters
     ----------
-    s1
+
+    s1 : Shape
     matrix: 3 lines, 4 columns
 
     Returns
     -------
+    transformed shape
 
     """
     m = _gp.gp_Trsf()
@@ -148,6 +151,47 @@ def _transform(s1, matrix):
     trf.Perform(s1.shape, True)
     return trf.Shape()
 
+def _unitary(s1,U):
+    r""" unitary transformation
+
+    Parameters
+    ----------
+
+    s1 : shape
+    U : np.array() 3 x 3
+        unitary matrix to apply  (det = +/- 1)
+
+    Returns
+    -------
+
+    The transformed shape
+
+
+    """
+    m = _gp.gp_Trsf()
+
+    Ax3 = _gp.gp_Ax3(_gp.gp_Pnt(0,0,0),
+                      _gp.gp_Dir(U[0,2], U[1,2], U[2,2]),
+                      _gp.gp_Dir(U[0,0], U[1,0], U[2,0]))
+
+    if np.isclose(la.det(U),-1):
+        Ax3.YReverse()
+        assert(not Ax3.Direct())
+    elif np.isclose(la.det(U),1):
+        assert(Ax3.Direct())
+
+    # DEBUG
+    #
+    # print(Ax3.XDirection().X(),Ax3.XDirection().Y(),Ax3.XDirection().Z())
+    # print(Ax3.YDirection().X(),Ax3.YDirection().Y(),Ax3.YDirection().Z())
+    # print(Ax3.Direction().X(),Ax3.Direction().Y(),Ax3.Direction().Z())
+    # print("--")
+    # print(U)
+
+    m.SetTransformation(Ax3)
+    trf = _BRepBuilderAPI.BRepBuilderAPI_Transform(m)
+    trf.Perform(s1.shape, True)
+    return trf.Shape()
 
 def _translate(s1, pdir):
     r"""Translate s1 in pdir
@@ -241,6 +285,7 @@ def _scale(s1, sx=1.0, sy=1.0, sz=1.0):
     return trf.Shape()
 
 
+
 def transformed(s1, matrix):
     r"""
     Returns a new shape which is s1 translated (moved).
@@ -248,17 +293,34 @@ def transformed(s1, matrix):
     Parameters
     ----------
     s1
-    pdir
+    matrix
 
     Returns
     -------
-    A new shape which is s1 translated (moved).
+    A new shape which is s1 transformed (moved).
 
     """
     s2 = s1.copy()
     s2.transform(matrix)
     return s2
 
+def unitary(s1, matrix):
+    r"""
+    Returns a new shape which is s1 translated (moved).
+
+    Parameters
+    ----------
+    s1
+    matrix
+
+    Returns
+    -------
+    A new shape which is s1 transformed (moved).
+
+    """
+    s2 = s1.copy()
+    s2.unitary(matrix)
+    return s2
 
 def translated(s1, pdir):
     r"""
@@ -1610,7 +1672,7 @@ def _raw_type(raw_shape):
 
 # Classes
 class Part(object):
-    r"""Part class
+    r""" Part class
 
     Notes
     -----
@@ -1620,17 +1682,21 @@ class Part(object):
     """
 
     def __init__(self, geometry, origin):
-        """  
+        """
+
         Parameters
         ----------
+
         geometry : solid
         origin : string
+
         """
+
         self._geometry = geometry
         self.origin = origin
 
     def __repr__(self):
-        st = 'Part from :' + self.origin
+        st = 'Part from :' + self.origin +'\n'
         st = st + self.geometry.__repr__()
         return(st)
 
@@ -2112,14 +2178,25 @@ class Shape(object):
 
     def transform(self, matrix):
         """
-        moves the shape
+        transform the shape
 
         Parameters
         ----------
-        pdir
+        matrix  : np.array
 
         """
         self.shape = _transform(self, matrix)
+
+    def unitary(self, matrix):
+        """
+        unitary transform of the shape
+
+        Parameters
+        ----------
+        matrix  : np.array
+
+        """
+        self.shape = _unitary(self, matrix)
 
     def translate(self, pdir):
         """
