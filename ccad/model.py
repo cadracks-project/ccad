@@ -39,6 +39,7 @@ import matplotlib.pyplot as plt
 
 import networkx as nx
 import numpy as np
+import numpy.linalg as la
 
 # from OCC.ChFi3d import *
 # from OCC.BlockFix import *
