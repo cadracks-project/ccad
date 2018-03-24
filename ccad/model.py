@@ -940,6 +940,8 @@ def _fillet_boolean(b1, rad):
     while iterator.More():
         b2.Add(rad, _TopoDS_edge(iterator.Value()))
         iterator.Next()
+    # b2 OCC.Core.BRepFilletAPI.BRepFilletAPI_MakeFillet
+    # TODO : RuntimeError  StdFaile_NotDone
     b3 = b2.Shape()
     return Solid(b3)
 
@@ -997,9 +999,11 @@ def fillet_common(s1, s2, rad):
 
     Parameters
     ----------
-    s1
-    s2
+
+    s1  : Shape
+    s2  : Shape
     rad : float
+        radius for fillet
 
     Returns
     -------
@@ -2256,6 +2260,9 @@ class Shape(object):
         """
         self.shape = _rotate(self, (0.0, 0.0, 0.0), (0.0, 0.0, 1.0), angle)
 
+    def unitary(self, U):
+        self.shape = _unitary(self,U)
+
     def mirror(self, pabout, pdir):
         """
         mirrors the shape
@@ -2448,7 +2455,7 @@ class Shape(object):
 
     def bounds(self):
         """
-        Puts a box around the shape and returns the minimum and
+        Putt eexi a box around the shape and returns the minimum and
         maximum coordinates in a 6-tuple.
 
         It currently returns a box which extends far beyond the real
@@ -3541,6 +3548,23 @@ class Solid(Shape):
         g1 = _GProp_GProps()
         _brepgprop_VolumeProperties(self.shape, g1)
         return g1.Mass()  # Returns volume when density hasn't been set
+
+    def bounding_box(self):
+        vertices = self.subshapes('Vertex')
+        pts = np.array([])
+        pts.shape = (0,3)
+        for vertex in vertices:
+            pt = np.array(vertex.center())[None,:]
+            pts = np.vstack((pts,pt))
+        pdb.set_trace()
+        xmin = np.min(pts[:,0])
+        xmax = np.max(pts[:,0])
+        ymin = np.min(pts[:,1])
+        ymax = np.max(pts[:,1])
+        zmin = np.min(pts[:,2])
+        zmax = np.max(pts[:,2])
+        bb = np.array([[xmin,ymin,zmin],[xmax,ymax,zmax]])
+        return(bb)
 
     def simplify(self, skip_edges=0, skip_faces=0, skip_fits=0,
                  stopat=-1, tolerance=1e-3):
