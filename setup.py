@@ -17,12 +17,12 @@ View LICENSE for details.
 
 """
 
-import os
-import sys
+# import os
+# import sys
 import glob
 
-import distutils.core
-import distutils.dir_util
+# import distutils.core
+# import distutils.dir_util
 import distutils.sysconfig
 
 name = 'ccad'

@@ -4,7 +4,7 @@
 Description
 ----------
 ccad modeller designed to be imported from a python prompt or program.
-View README for a full description of ccad.
+View README.md for a full description of ccad.
 
 model.py contains classes and functions for modelling.
 
@@ -35,9 +35,10 @@ if PY3 is True:
 else:
     from urllib import urlopen
 import imp
+
 import matplotlib.pyplot as plt
 
-import networkx as nx
+# import networkx as nx
 import numpy as np
 import numpy.linalg as la
 
@@ -69,7 +70,7 @@ from OCC.Core.GC import (GC_MakeArcOfCircle as _GC_MakeArcOfCircle,
 from OCC.Core.GCPnts import (GCPnts_QuasiUniformDeflection as
                         _GCPnts_QuasiUniformDeflection)
 from OCC.Core.Geom import Geom_BezierCurve as _Geom_BezierCurve
-from OCC.Core.Geom import Handle_Geom_Plane_DownCast,Geom_Plane
+# from OCC.Core.Geom import Handle_Geom_Plane_DownCast, Geom_Plane
 from OCC.Core import GeomAbs as _GeomAbs
 from OCC.Core.GeomAdaptor import (GeomAdaptor_Curve as _GeomAdaptor_Curve,
                              GeomAdaptor_Surface as _GeomAdaptor_Surface)
@@ -118,6 +119,7 @@ logger = logging.getLogger(__name__)
 
 # Shape Functions
 
+
 def _transform(s1, matrix):
     r"""
 
@@ -152,7 +154,8 @@ def _transform(s1, matrix):
     trf.Perform(s1.shape, True)
     return trf.Shape()
 
-def _unitary(s1,U):
+
+def _unitary(s1, U):
     r""" unitary transformation
 
     Parameters
@@ -171,15 +174,23 @@ def _unitary(s1,U):
     """
     m = _gp.gp_Trsf()
 
-    Ax3 = _gp.gp_Ax3(_gp.gp_Pnt(0,0,0),
-                      _gp.gp_Dir(U[0,2], U[1,2], U[2,2]),
-                      _gp.gp_Dir(U[0,0], U[1,0], U[2,0]))
+    Ax3 = _gp.gp_Ax3(_gp.gp_Pnt(0, 0, 0),
+                      _gp.gp_Dir(U[0, 2], U[1, 2], U[2, 2]),
+                      _gp.gp_Dir(U[0, 0], U[1, 0], U[2, 0]))
 
-    if np.isclose(la.det(U),-1):
+    if np.isclose(la.det(U), -1):
         Ax3.YReverse()
-        assert(not Ax3.Direct())
-    elif np.isclose(la.det(U),1):
-        assert(Ax3.Direct())
+        # assert(not Ax3.Direct())
+        if Ax3.Direct():
+            msg = "Ax3 should not be direct"
+            logger.error(msg)
+            raise AssertionError(msg)
+    elif np.isclose(la.det(U), 1):
+        # assert(Ax3.Direct())
+        if not Ax3.Direct():
+            msg = "Ax3 should be direct"
+            logger.error(msg)
+            raise AssertionError(msg)
 
     # DEBUG
     #
@@ -193,6 +204,7 @@ def _unitary(s1,U):
     trf = _BRepBuilderAPI.BRepBuilderAPI_Transform(m)
     trf.Perform(s1.shape, True)
     return trf.Shape()
+
 
 def _translate(s1, pdir):
     r"""Translate s1 in pdir
@@ -286,7 +298,6 @@ def _scale(s1, sx=1.0, sy=1.0, sz=1.0):
     return trf.Shape()
 
 
-
 def transformed(s1, matrix):
     r"""
     Returns a new shape which is s1 translated (moved).
@@ -305,6 +316,7 @@ def transformed(s1, matrix):
     s2.transform(matrix)
     return s2
 
+
 def unitary(s1, matrix):
     r"""
     Returns a new shape which is s1 translated (moved).
@@ -322,6 +334,7 @@ def unitary(s1, matrix):
     s2 = s1.copy()
     s2.unitary(matrix)
     return s2
+
 
 def translated(s1, pdir):
     r"""
@@ -748,7 +761,8 @@ def _raw_faces_merge(f1, f2):
     # Create the merged wire
     b = _BRepBuilderAPI.BRepBuilderAPI_MakeWire()
     ds = []
-    for count in range(len(e1s)):
+    # for count in range(len(e1s)):
+    for count, _ in enumerate(e1s):
         if count in c1s:
             if len(c2s) < len(e2s):  # Make sure they're not all common
                 index1 = c1s.index(count)
@@ -1115,7 +1129,8 @@ def chamfer_common(s1, s2, dist):
         return common(s1, s2)
 
 
-def glue(s1, s2, face_pairs=[]):
+# def glue(s1, s2, face_pairs=[]):
+def glue(s1, s2, face_pairs=None):
     """
     Glues solids s1 and s2 together at the face_pairs.  face_pairs is
     a list of tuples.  Each tuple represents face indices that should
@@ -1132,6 +1147,9 @@ def glue(s1, s2, face_pairs=[]):
     solid
 
     """
+    if face_pairs is None:
+        face_pairs = []
+
     s1f = s1._raw('Face')
     s2f = s2._raw('Face')
     if len(face_pairs) == 0:
@@ -1164,7 +1182,8 @@ def glue(s1, s2, face_pairs=[]):
     return Solid(b.Shape())
 
 
-def simple_glue(s1, s2, face_pairs=[], tolerance=1e-3):
+# def simple_glue(s1, s2, face_pairs=[], tolerance=1e-3):
+def simple_glue(s1, s2, face_pairs=None, tolerance=1e-3):
     """
     Glues solids s1 and s2 together at the face_pairs.  face_pairs is
     a list of tuples.  Each tuple represents faces that should be
@@ -1184,6 +1203,8 @@ def simple_glue(s1, s2, face_pairs=[], tolerance=1e-3):
     Solid
 
     """
+    if face_pairs is None:
+        face_pairs = []
 
     s1f = s1._raw('Face')
     s2f = s2._raw('Face')
@@ -1294,7 +1315,8 @@ def from_iges(name):
     """
     if _path.exists(name):
         reader = _IGESControl_Reader()
-        status = reader.ReadFile(name)
+        # status = reader.ReadFile(name)
+        _ = reader.ReadFile(name)
         okay = reader.TransferRoots()
         if not okay:
             # print('Warning: Could not translate all shapes')
@@ -1365,14 +1387,15 @@ def from_svg(name):
             del local_wire[:]
 
     def strpt_to_float(strpt):
-        r""" string point to float 
+        r""" string point to float
 
         Parameters
         ----------
         strpt
 
         """
-        pt = list(map(lambda x: float(x), strpt.split(',')))
+        # pt = list(map(lambda x: float(x), strpt.split(',')))
+        pt = list(map(float, strpt.split(',')))
         if not absolute:
             pt = (pt0[0] + pt[0], pt0[1] + pt[1])  # Make absolute
         return pt[0], pt[1]
@@ -1451,7 +1474,8 @@ def from_svg(name):
         if len(entities) > 0 and entities[-1] == 'g':
             m = _re.match('\s*transform="matrix\((.+)\)"', line)
             if m:
-                matrix = map(lambda x: float(x), m.group(1).split(','))
+                # matrix = map(lambda x: float(x), m.group(1).split(','))
+                matrix = map(float, m.group(1).split(','))
                 matrices.append((len(entities), _gp.gp_Mat(matrix[0],
                                                            matrix[2],
                                                            matrix[4],
@@ -1461,7 +1485,8 @@ def from_svg(name):
                                                            0.0, 0.0, 1.0)))
             m = _re.match('\s*transform="translate\((.+)\)"', line)
             if m:
-                matrix = map(lambda x: float(x), m.group(1).split(','))
+                # matrix = map(lambda x: float(x), m.group(1).split(','))
+                matrix = map(float, m.group(1).split(','))
                 matrices.append((len(entities), _gp.gp_Mat(1.0,
                                                            0.0,
                                                            matrix[0],
@@ -1542,7 +1567,8 @@ def from_svg(name):
                 index += 1
                 while index < len(ls) and ls[index] not in cmds:
                     x1, y1 = pt0
-                    rx, ry = map(lambda x: float(x), ls[index].split(','))
+                    # rx, ry = map(lambda x: float(x), ls[index].split(','))
+                    rx, ry = map(float, ls[index].split(','))
                     phi = _math.radians(float(ls[index + 1]))
                     fa = int(ls[index + 2])
                     fs = int(ls[index + 3])
@@ -2780,7 +2806,7 @@ class Wire(Shape):
         #    if k<(N-1):
         #        st = st + '(%.2f %.2f %.2f)' % (pt[0],pt[1],pt[2]) + ' , '
         #    else:
-        #        st = st + '(%.2f %.2f %.2f)' % (pt[0],pt[1],pt[2]) 
+        #        st = st + '(%.2f %.2f %.2f)' % (pt[0],pt[1],pt[2])
 
         st = st  + 'Length : %2.f' % self.length() + '\n'
         edges = self.subshapes('Edge')
@@ -2915,16 +2941,21 @@ class Face(Shape):
     def __repr__(self):
 
         st = ''
+<<<<<<< HEAD
         wire = self.wire()
+=======
+        # wire = self.wire()
+        _ = self.wire()
+>>>>>>> 8785f22ff92a38350d0116d77ee0c5424647f45e
         st = st + 'Area : %.3f' % self.area()
         pc = self.center()
-        st = st + "   Center : %.3f, %.3f , %.3f" % (pc[0],pc[1],pc[2])
-        #st = st + wire.__repr__()
-        st = st+'\n'
+        st = st + "   Center : %.3f, %.3f , %.3f" % (pc[0], pc[1], pc[2])
+        # st = st + wire.__repr__()
+        st = st + '\n'
 
-        return(st)
+        return st
 
-    def plot(self,**kwargs):
+    def plot(self, **kwargs):
         self.wire().plot(**kwargs)
 
     def fillet(self, rad, vertex_indices=None):
@@ -3013,23 +3044,29 @@ class Face(Shape):
         """ determine the face normal
         TODO : Implement is using OCC primitive
         """
+<<<<<<< HEAD
+=======
+        # w = self.subshapes('Wire')
+        _ = self.subshapes('Wire')
+>>>>>>> 8785f22ff92a38350d0116d77ee0c5424647f45e
         e = self.subshapes('Edge')
         pt = e[0].poly()
-        p0 = np.array([pt[0][0],pt[0][1],pt[0][2]])
-        p1 = np.array([pt[1][0],pt[1][1],pt[1][2]])
+        p0 = np.array([pt[0][0], pt[0][1], pt[0][2]])
+        p1 = np.array([pt[1][0], pt[1][1], pt[1][2]])
         v0 = p1-p0
         pt = e[1].poly()
-        p0 = np.array([pt[0][0],pt[0][1],pt[0][2]])
-        p1 = np.array([pt[1][0],pt[1][1],pt[1][2]])
+        p0 = np.array([pt[0][0], pt[0][1], pt[0][2]])
+        p1 = np.array([pt[1][0], pt[1][1], pt[1][2]])
         v1 = p1-p0
-        n = np.cross(v0,v1)
+        n = np.cross(v0, v1)
         n = n/np.linalg.norm(n)
         return n
-        #surf = _BRep_Tool_Surface(_Topo(self.shape).face())
-        #pl = Handle_Geom_Plane_DownCast(surf)
-        #pln = pl.GetObject()
-        #norm = pln.Axis().Direction()
-        return(norm)
+        # surf = _BRep_Tool_Surface(_Topo(self.shape).face())
+        # pl = Handle_Geom_Plane_DownCast(surf)
+        # pln = pl.GetObject()
+        # norm = pln.Axis().Direction()
+
+        # return norm
 
     def center(self):
         r"""
@@ -3467,26 +3504,21 @@ class Solid(Shape):
         tolerance : float, optional (default is 1e-3)
 
         """
+        # # Seemed simple, but didn't work.  Glancing through the
+        # # C-code, I don't think BOP_Refiner is a fusing algorithm.
+        # b = BOP_Refiner()
+        # b.SetShape(self.shape)
+        # b.Do()
+        # print 'Removed', b.NbRemovedVertices(), 'vertices'
+        # print 'Removed', b.NbRemovedEdges(), 'edges'
+        # self.shape = b.Shape()
 
-        """
-        # Seemed simple, but didn't work.  Glancing through the
-        # C-code, I don't think BOP_Refiner is a fusing algorithm.
-        b = BOP_Refiner()
-        b.SetShape(self.shape)
-        b.Do()
-        print 'Removed', b.NbRemovedVertices(), 'vertices'
-        print 'Removed', b.NbRemovedEdges(), 'edges'
-        self.shape = b.Shape()
-        """
-
-        """
-        # Seemed simple, but didn't work
-        b1 = BlockFix_BlockFixAPI()
-        b1.SetShape(self.shape)
-        b1.SetTolerance(tolerance)
-        b1.Perform()
-        self.shape = b1.Shape()
-        """
+        # # Seemed simple, but didn't work
+        # b1 = BlockFix_BlockFixAPI()
+        # b1.SetShape(self.shape)
+        # b1.SetTolerance(tolerance)
+        # b1.Perform()
+        # self.shape = b1.Shape()
 
         # Fuse Edges first
         if not skip_edges:
@@ -3770,7 +3802,8 @@ def spline(pts, **options):
                                      options['tolerance']).Curve()).Edge())
 
 
-def bezier(pts, weights=[]):
+# def bezier(pts, weights=[]):
+def bezier(pts, weights=None):
     """
     Returns an edge that is a Bezier curve fitted through pts.  Only
     the first and last points does it pass through.  The others are
@@ -3783,6 +3816,9 @@ def bezier(pts, weights=[]):
     weights : list[float], optionla (default is an empty list)
 
     """
+    if weights is None:
+        weights = []
+
     num_pts = len(pts)
     tpts = _TColgp_Array1OfPnt(0, num_pts - 1)
     for count in range(num_pts):
@@ -3869,8 +3905,9 @@ def polygon(pts):
     """
 
     b = _BRepBuilderAPI.BRepBuilderAPI_MakePolygon()
-    for count in range(len(pts)):
-        b.Add(_gp.gp_Pnt(pts[count][0], pts[count][1], pts[count][2]))
+    # for count in range(len(pts)):
+    for pt in pts:
+        b.Add(_gp.gp_Pnt(pt[0], pt[1], pt[2]))
     return Wire(b.Wire())
 
 
@@ -3919,7 +3956,8 @@ def ngon(rad, n):
 
     angle = 0.0
     pts = []
-    for count in range(n + 1):
+    # for count in range(n + 1):
+    for _ in range(n + 1):
         angle += (2 * _math.pi / n)
         pts.append((rad * _math.cos(angle), rad * _math.sin(angle), 0.0))
     return polygon(pts)
@@ -3982,7 +4020,8 @@ def helix(rad, angle, turns, eps=1e-12):
 
 # Face Primitives
 
-def plane(w1, inner_wires=[]):
+# def plane(w1, inner_wires=[]):
+def plane(w1, inner_wires=None):
     """
     Returns a face which is a plane.
 
@@ -4001,6 +4040,8 @@ def plane(w1, inner_wires=[]):
     Face
 
     """
+    if inner_wires is None:
+        inner_wires = []
     # w1 must be planar!
     ow1 = _TopoDS_wire(w1.shape)
     # ow1.Orientation(TopAbs_EXTERNAL) # This made them disappear

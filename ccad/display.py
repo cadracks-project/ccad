@@ -4,7 +4,7 @@
 Description
 -----------
 ccad viewer designed to be imported from a python prompt or program.
-View README for a full description of ccad.
+View README.md for a full description of ccad.
 
 display.py contains classes and functions for displaying.
 
@@ -33,6 +33,7 @@ import os as _os
 import sys as _sys
 import math as _math
 import logging
+from ast import literal_eval
 
 try:
     # from PyQt4 import QtCore as _QtCore, QtGui as _QtGui
@@ -40,7 +41,8 @@ try:
 except ImportError:
     try:
         from PySide import QtCore, QtGui as QtWidgets
-    except:
+    # except:
+    except ImportError:  # import can only raise an ImportError
         manager = 'none'
         print("""
 Warning: Cannot find python-qt4 or pyside.  You will not be able to
@@ -345,7 +347,8 @@ class ViewQt(QtWidgets.QWidget):
         if key in self.key_table.values():
             try:
                 cmd = self.key_table.keys()[self.key_table.values().index(key)]
-                eval('self.' + cmd)
+                # eval('self.' + cmd)
+                literal_eval('self.' + cmd)
             except:
                 self.status_bar.setText('Command unknown ' + cmd)
 
