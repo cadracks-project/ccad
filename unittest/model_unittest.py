@@ -34,11 +34,13 @@ except ImportError:
 import math
 import unittest
 import sys
+from ast import literal_eval
 
 
 def dp(p1, p2):
     retval = []
-    for count in range(len(p1)):
+    # for count in range(len(p1)):
+    for count, _ in enumerate(p1):
         retval.append(p1[count] - p2[count])
     return retval
 
@@ -1254,8 +1256,10 @@ def suite(tests=[]):
         tests = filter(lambda x: x.startswith('Test'), globals())
     print(tests)
     for test in tests:
-        eval('suite.addTest(unittest.makeSuite(' + test + '))')
+        # eval('suite.addTest(unittest.makeSuite(' + test + '))')
+        literal_eval('suite.addTest(unittest.makeSuite(' + test + '))')
     return suite
+
 
 if __name__ == '__main__':
     unittest.TextTestRunner(verbosity=2).run(suite(sys.argv[1:]))
