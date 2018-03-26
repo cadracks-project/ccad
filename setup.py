@@ -21,7 +21,7 @@ View LICENSE for details.
 # import sys
 import glob
 
-# import distutils.core
+import distutils.core
 # import distutils.dir_util
 import distutils.sysconfig
 
