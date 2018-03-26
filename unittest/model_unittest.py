@@ -55,7 +55,8 @@ def close(p1, p2, eps=1e-6):
         if len(p1) != len(p2):
             return False
         retval = True
-        for count in range(len(p1)):
+        # for count in range(len(p1)):
+        for count, _ in enumerate(p1):
             if abs(p1[count] - p2[count]) >= eps:
                 retval = False
                 break
@@ -181,7 +182,8 @@ class TestSolidFunctions(unittest.TestCase):
 
     def test_common(self):
         s1 = cm.sphere(1.0)
-        v1 = s1.volume()
+        # v1 = s1.volume()
+        _ = s1.volume()  # TODO : is this useful?
         s2 = cm.box(2.0, 2.0, 2.0)
         s2.translate((0.0, -1.0, -1.0))
         s3 = cm.common(s1, s2)

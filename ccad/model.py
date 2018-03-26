@@ -38,7 +38,7 @@ import imp
 
 import matplotlib.pyplot as plt
 
-import networkx as nx
+# import networkx as nx
 import numpy as np
 import numpy.linalg as la
 
@@ -1178,7 +1178,8 @@ def glue(s1, s2, face_pairs=None):
     return Solid(b.Shape())
 
 
-def simple_glue(s1, s2, face_pairs=[], tolerance=1e-3):
+# def simple_glue(s1, s2, face_pairs=[], tolerance=1e-3):
+def simple_glue(s1, s2, face_pairs=None, tolerance=1e-3):
     """
     Glues solids s1 and s2 together at the face_pairs.  face_pairs is
     a list of tuples.  Each tuple represents faces that should be
@@ -1198,6 +1199,8 @@ def simple_glue(s1, s2, face_pairs=[], tolerance=1e-3):
     Solid
 
     """
+    if face_pairs is None:
+        face_pairs = []
 
     s1f = s1._raw('Face')
     s2f = s2._raw('Face')
@@ -1380,7 +1383,7 @@ def from_svg(name):
             del local_wire[:]
 
     def strpt_to_float(strpt):
-        r""" string point to float 
+        r""" string point to float
 
         Parameters
         ----------
@@ -1560,7 +1563,8 @@ def from_svg(name):
                 index += 1
                 while index < len(ls) and ls[index] not in cmds:
                     x1, y1 = pt0
-                    rx, ry = map(lambda x: float(x), ls[index].split(','))
+                    # rx, ry = map(lambda x: float(x), ls[index].split(','))
+                    rx, ry = map(float, ls[index].split(','))
                     phi = _math.radians(float(ls[index + 1]))
                     fa = int(ls[index + 2])
                     fs = int(ls[index + 3])
@@ -3145,24 +3149,26 @@ class Face(Shape):
         """ determine the face normal
         TODO : Implement is using OCC primitive
         """
-        w = self.subshapes('Wire')
+        # w = self.subshapes('Wire')
+        _ = self.subshapes('Wire')
         e = self.subshapes('Edge')
         pt = e[0].poly()
-        p0 = np.array([pt[0][0],pt[0][1],pt[0][2]])
-        p1 = np.array([pt[1][0],pt[1][1],pt[1][2]])
+        p0 = np.array([pt[0][0], pt[0][1], pt[0][2]])
+        p1 = np.array([pt[1][0], pt[1][1], pt[1][2]])
         v0 = p1-p0
         pt = e[1].poly()
-        p0 = np.array([pt[0][0],pt[0][1],pt[0][2]])
-        p1 = np.array([pt[1][0],pt[1][1],pt[1][2]])
+        p0 = np.array([pt[0][0], pt[0][1], pt[0][2]])
+        p1 = np.array([pt[1][0], pt[1][1], pt[1][2]])
         v1 = p1-p0
-        n = np.cross(v0,v1)
+        n = np.cross(v0, v1)
         n = n/np.linalg.norm(n)
         return n
-        #surf = _BRep_Tool_Surface(_Topo(self.shape).face())
-        #pl = Handle_Geom_Plane_DownCast(surf)
-        #pln = pl.GetObject()
-        #norm = pln.Axis().Direction()
-        return(norm)
+        # surf = _BRep_Tool_Surface(_Topo(self.shape).face())
+        # pl = Handle_Geom_Plane_DownCast(surf)
+        # pln = pl.GetObject()
+        # norm = pln.Axis().Direction()
+
+        # return norm
 
     def center(self):
         r"""
@@ -3583,26 +3589,21 @@ class Solid(Shape):
         tolerance : float, optional (default is 1e-3)
 
         """
+        # # Seemed simple, but didn't work.  Glancing through the
+        # # C-code, I don't think BOP_Refiner is a fusing algorithm.
+        # b = BOP_Refiner()
+        # b.SetShape(self.shape)
+        # b.Do()
+        # print 'Removed', b.NbRemovedVertices(), 'vertices'
+        # print 'Removed', b.NbRemovedEdges(), 'edges'
+        # self.shape = b.Shape()
 
-        """
-        # Seemed simple, but didn't work.  Glancing through the
-        # C-code, I don't think BOP_Refiner is a fusing algorithm.
-        b = BOP_Refiner()
-        b.SetShape(self.shape)
-        b.Do()
-        print 'Removed', b.NbRemovedVertices(), 'vertices'
-        print 'Removed', b.NbRemovedEdges(), 'edges'
-        self.shape = b.Shape()
-        """
-
-        """
-        # Seemed simple, but didn't work
-        b1 = BlockFix_BlockFixAPI()
-        b1.SetShape(self.shape)
-        b1.SetTolerance(tolerance)
-        b1.Perform()
-        self.shape = b1.Shape()
-        """
+        # # Seemed simple, but didn't work
+        # b1 = BlockFix_BlockFixAPI()
+        # b1.SetShape(self.shape)
+        # b1.SetTolerance(tolerance)
+        # b1.Perform()
+        # self.shape = b1.Shape()
 
         # Fuse Edges first
         if not skip_edges:
@@ -3886,7 +3887,8 @@ def spline(pts, **options):
                                      options['tolerance']).Curve()).Edge())
 
 
-def bezier(pts, weights=[]):
+# def bezier(pts, weights=[]):
+def bezier(pts, weights=None):
     """
     Returns an edge that is a Bezier curve fitted through pts.  Only
     the first and last points does it pass through.  The others are
@@ -3899,6 +3901,9 @@ def bezier(pts, weights=[]):
     weights : list[float], optionla (default is an empty list)
 
     """
+    if weights is None:
+        weights = []
+
     num_pts = len(pts)
     tpts = _TColgp_Array1OfPnt(0, num_pts - 1)
     for count in range(num_pts):
@@ -3985,8 +3990,9 @@ def polygon(pts):
     """
 
     b = _BRepBuilderAPI.BRepBuilderAPI_MakePolygon()
-    for count in range(len(pts)):
-        b.Add(_gp.gp_Pnt(pts[count][0], pts[count][1], pts[count][2]))
+    # for count in range(len(pts)):
+    for pt in pts:
+        b.Add(_gp.gp_Pnt(pt[0], pt[1], pt[2]))
     return Wire(b.Wire())
 
 
@@ -4035,7 +4041,8 @@ def ngon(rad, n):
 
     angle = 0.0
     pts = []
-    for count in range(n + 1):
+    # for count in range(n + 1):
+    for _ in range(n + 1):
         angle += (2 * _math.pi / n)
         pts.append((rad * _math.cos(angle), rad * _math.sin(angle), 0.0))
     return polygon(pts)
@@ -4098,7 +4105,8 @@ def helix(rad, angle, turns, eps=1e-12):
 
 # Face Primitives
 
-def plane(w1, inner_wires=[]):
+# def plane(w1, inner_wires=[]):
+def plane(w1, inner_wires=None):
     """
     Returns a face which is a plane.
 
@@ -4117,6 +4125,8 @@ def plane(w1, inner_wires=[]):
     Face
 
     """
+    if inner_wires is None:
+        inner_wires = []
     # w1 must be planar!
     ow1 = _TopoDS_wire(w1.shape)
     # ow1.Orientation(TopAbs_EXTERNAL) # This made them disappear

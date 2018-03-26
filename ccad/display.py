@@ -41,7 +41,8 @@ try:
 except ImportError:
     try:
         from PySide import QtCore, QtGui as QtWidgets
-    except:
+    # except:
+    except ImportError:  # import can only raise an ImportError
         manager = 'none'
         print("""
 Warning: Cannot find python-qt4 or pyside.  You will not be able to
