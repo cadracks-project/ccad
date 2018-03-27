@@ -21,11 +21,7 @@ View LICENSE for details.
 # import sys
 import glob
 
-<<<<<<< HEAD
-import distutils.core
-=======
 from distutils.core import setup
->>>>>>> 886a763481bf6ba1c6a49d9b9a5578a1ba159a9d
 # import distutils.dir_util
 # import distutils.sysconfig
 

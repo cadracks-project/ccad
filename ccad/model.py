@@ -2941,14 +2941,11 @@ class Face(Shape):
     def __repr__(self):
 
         st = ''
-<<<<<<< HEAD
-        wire = self.wire()
+        #wire = self.wire()
         # wire = self.wire()
         # _ = self.wire()
-=======
         # wire = self.wire()
-        _ = self.wire()
->>>>>>> 886a763481bf6ba1c6a49d9b9a5578a1ba159a9d
+        #_ = self.wire()
         st = st + 'Area : %.3f' % self.area()
         pc = self.center()
         st = st + "   Center : %.3f, %.3f , %.3f" % (pc[0], pc[1], pc[2])
