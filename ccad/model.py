@@ -954,6 +954,8 @@ def _fillet_boolean(b1, rad):
     while iterator.More():
         b2.Add(rad, _TopoDS_edge(iterator.Value()))
         iterator.Next()
+    # b2 OCC.Core.BRepFilletAPI.BRepFilletAPI_MakeFillet
+    # TODO : RuntimeError  StdFaile_NotDone
     b3 = b2.Shape()
     return Solid(b3)
 
@@ -1011,9 +1013,11 @@ def fillet_common(s1, s2, rad):
 
     Parameters
     ----------
-    s1
-    s2
+
+    s1  : Shape
+    s2  : Shape
     rad : float
+        radius for fillet
 
     Returns
     -------
@@ -1339,11 +1343,11 @@ def from_step(name):
     """
     if _path.exists(name):
         reader = _STEPControl.STEPControl_Reader()
-        logger.info("Reading STEP file : %s" % name)
+        #logger.info("Reading STEP file : %s" % name)
         status = reader.ReadFile(name)
-        logger.info("Reading STEP file status : %s" % str(status))
+        #logger.info("Reading STEP file status : %s" % str(status))
         okay = reader.TransferRoots()
-        logger.info("Reading STEP file okay : %s" % str(okay))
+        #logger.info("Reading STEP file okay : %s" % str(okay))
         shape = reader.OneShape()
         return _convert_import(shape)
     else:
@@ -1833,122 +1837,6 @@ class Part(object):
         return self._geometry
 
 
-#class Assembly(object):
-#    r"""
-#
-#    Parameters
-#    ----------
-#    shape
-#    origin : str
-#        The file or script the assembly was created from
-#    direct : bool, optional(default is False)
-#        If True, directly use the point cloud of the Shell
-#        If False, iterate the faces, wires and then vertices
-#
-#    TODO : To Be remove ( redundant with recersy)
-#
-#    """
-#    def __init__(self, shape, origin=None, direct=False):
-#        self.shape = shape
-#        self.G = nx.DiGraph()
-#        self.G.pos = dict()
-#        self.origin = origin
-#
-#        shells = self.shape.subshapes("Shell")
-#        logger.info("%i shells in assembly" % len(shells))
-#
-#        for k, shell in enumerate(shells):
-#            logger.info("Dealing with shell nb %i" % k)
-#            self.G.pos[k] = shell.center()
-#            pcloud = np.array([[]])
-#            pcloud.shape = (3, 0)
-#
-#            if direct:
-#                vertices = shell.subshapes("Vertex")
-#                logger.info("%i vertices found for direct method")
-#                for vertex in vertices:
-#                    point = np.array(vertex.center())[:, None]
-#                    pcloud = np.append(pcloud, point, axis=1)
-#            else:
-#                faces = shell.subshapes("Face")
-#
-#                for face in faces:
-#                    face_type = face.type()
-#                    wires = face.subshapes("Wire")
-#
-#                    for wire in wires:
-#                        vertices = wire.subshapes("Vertex")
-#
-#                        for vertex in vertices:
-#                            point = np.array(vertex.center())[:, None]
-#                            pcloud = np.append(pcloud, point, axis=1)
-#
-#                    if face_type == "plane":
-#                        pass
-#                    if face_type == "cylinder":
-#                        pass
-#
-#            self.G.add_node(k, pcloud=pcloud, shape=shell)
-#
-#    @classmethod
-#    def from_step(cls, filename, direct=False):
-#        r"""Create an Assembly instance from a STEP file
-#
-#        Parameters
-#        ----------
-#        filename : str
-#            Path to the STEP file
-#        direct : bool, optional(default is False)
-#            If True, directly use the point cloud of the Shell
-#            If False, iterate the faces, wires and then vertices
-#
-#        Returns
-#        -------
-#        Assembly : the new Assembly object created from a STEP file
-#
-#        """
-#        solid = from_step(filename)
-#        return cls(solid, origin=filename, direct=direct)
-#
-#    def tag_nodes(self):
-#        r"""Add computed data to each node f the assembly"""
-#        for k in self.G.node:
-#            sig, V, ptm, q, vec, ang = signature(self.G.node[k]['pcloud'])
-#            self.G.node[k]['name'] = sig
-#            self.G.node[k]['R'] = V
-#            self.G.node[k]['ptm'] = ptm
-#            self.G.node[k]['q'] = q
-#
-#    def write_components(self):
-#        r"""Write components of the assembly to their own step files in a
-#        subdirectory of the folder containing the original file"""
-#        if os.path.isfile(self.origin):
-#            directory = os.path.dirname(self.origin)
-#            basename = os.path.basename(self.origin)
-#            subdirectory = os.path.join(directory,
-#                                        os.path.splitext(basename)[0])
-#            if not os.path.isdir(subdirectory):
-#                os.mkdir(subdirectory)
-#        else:
-#            msg = "The components of the assembly should already exist"
-#            raise ValueError(msg)
-#
-#        for k in self.G.node:
-#            sig, V, ptm, q, vec, ang = signature(self.G.node[k]['pcloud'])
-#            shp = self.G.node[k]['shape']
-#            filename = sig + ".stp"
-#            if not os.path.isfile(filename):
-#                shp.translate(-ptm)
-#                shp.rotate(np.array([0, 0, 0]), vec, ang)
-#                filename = os.path.join(subdirectory, filename)
-#                shp.to_step(filename)
-#
-#    def __repr__(self):
-#        st = self.shape.__repr__()+'\n'
-#        st += self.G.__repr__()+'\n'
-#        return st
-#
-#
 class Shape(object):
     """
         A base class for all shapes:
@@ -2282,6 +2170,9 @@ class Shape(object):
         """
         self.shape = _rotate(self, (0.0, 0.0, 0.0), (0.0, 0.0, 1.0), angle)
 
+    def unitary(self, U):
+        self.shape = _unitary(self,U)
+
     def mirror(self, pabout, pdir):
         """
         mirrors the shape
@@ -2474,7 +2365,7 @@ class Shape(object):
 
     def bounds(self):
         """
-        Puts a box around the shape and returns the minimum and
+        Putt eexi a box around the shape and returns the minimum and
         maximum coordinates in a 6-tuple.
 
         It currently returns a box which extends far beyond the real
@@ -3050,8 +2941,12 @@ class Face(Shape):
     def __repr__(self):
 
         st = ''
+<<<<<<< HEAD
+        wire = self.wire()
+=======
         # wire = self.wire()
         _ = self.wire()
+>>>>>>> 8785f22ff92a38350d0116d77ee0c5424647f45e
         st = st + 'Area : %.3f' % self.area()
         pc = self.center()
         st = st + "   Center : %.3f, %.3f , %.3f" % (pc[0], pc[1], pc[2])
@@ -3149,8 +3044,11 @@ class Face(Shape):
         """ determine the face normal
         TODO : Implement is using OCC primitive
         """
+<<<<<<< HEAD
+=======
         # w = self.subshapes('Wire')
         _ = self.subshapes('Wire')
+>>>>>>> 8785f22ff92a38350d0116d77ee0c5424647f45e
         e = self.subshapes('Edge')
         pt = e[0].poly()
         p0 = np.array([pt[0][0], pt[0][1], pt[0][2]])
@@ -3570,6 +3468,23 @@ class Solid(Shape):
         g1 = _GProp_GProps()
         _brepgprop_VolumeProperties(self.shape, g1)
         return g1.Mass()  # Returns volume when density hasn't been set
+
+    def bounding_box(self):
+        #vertices = self.subshapes('Vertex')
+        #pts = np.array([])
+        #pts.shape = (0,3)
+        #for vertex in vertices:
+        #    pt = np.array(vertex.center())[None,:]
+        #    pts = np.vstack((pts,pt))
+        #xmin = np.min(pts[:,0])
+        #xmax = np.max(pts[:,0])
+        #ymin = np.min(pts[:,1])
+        #ymax = np.max(pts[:,1])
+        #zmin = np.min(pts[:,2])
+        #zmax = np.max(pts[:,2])
+        #bb = np.array([[xmin,ymin,zmin],[xmax,ymax,zmax]])
+        bb = np.array(self.bounds()).reshape(2,3)
+        return(bb)
 
     def simplify(self, skip_edges=0, skip_faces=0, skip_fits=0,
                  stopat=-1, tolerance=1e-3):
