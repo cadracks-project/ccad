@@ -279,9 +279,9 @@ class TestSolidFunctions(unittest.TestCase):
         self.assert_(close(v3, 2 * 2.0 * 2.0 * 2.0))
 
     def test_bounding_box(self):
-        s1 = cm.box(2.0,3.0,4.0)
+        s1 = cm.box(2.0, 3.0, 4.0)
         bbs1 = s1.bounding_box()
-        self.assert(True)
+        self.assert_(True)
 
 
 # Import Functions

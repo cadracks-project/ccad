@@ -23,7 +23,7 @@ import glob
 
 from distutils.core import setup
 # import distutils.dir_util
-import distutils.sysconfig
+# import distutils.sysconfig
 
 name = 'ccad'
 version = '0.13'  # Change also in display.py, doc/conf.py
