@@ -21,7 +21,7 @@ View LICENSE for details.
 # import sys
 import glob
 
-# import distutils.core
+from distutils.core import setup
 # import distutils.dir_util
 import distutils.sysconfig
 
@@ -37,10 +37,10 @@ data_files = [(prefix + 'html', glob.glob('doc/html/*.html')),
               (prefix + 'html/_sources', glob.glob('doc/html/_sources/*'))]
 
 # Install the module
-distutils.core.setup(name=name,
-                     version=version,
-                     url='UNKNOWN',
-                     py_modules=['ccad.model', 'ccad.display','ccad.planarnet'],
-                     package_dir={'ccad': './ccad'},
-                     data_files=data_files,
-                     requires=['OCC', 'PyQt4'])
+setup(name=name,
+      version=version,
+      url='UNKNOWN',
+      py_modules=['ccad.model', 'ccad.display', 'ccad.planarnet'],
+      package_dir={'ccad': './ccad'},
+      data_files=data_files,
+      requires=['OCC', 'PyQt4'])
