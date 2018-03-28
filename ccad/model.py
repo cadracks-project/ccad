@@ -2941,8 +2941,11 @@ class Face(Shape):
     def __repr__(self):
 
         st = ''
+        #wire = self.wire()
         # wire = self.wire()
-        _ = self.wire()
+        # _ = self.wire()
+        # wire = self.wire()
+        #_ = self.wire()
         st = st + 'Area : %.3f' % self.area()
         pc = self.center()
         st = st + "   Center : %.3f, %.3f , %.3f" % (pc[0], pc[1], pc[2])
@@ -3040,11 +3043,8 @@ class Face(Shape):
         """ determine the face normal
         TODO : Implement is using OCC primitive
         """
-<<<<<<< HEAD
-=======
         # w = self.subshapes('Wire')
-        _ = self.subshapes('Wire')
->>>>>>> 8785f22ff92a38350d0116d77ee0c5424647f45e
+        #_ = self.subshapes('Wire')
         e = self.subshapes('Edge')
         pt = e[0].poly()
         p0 = np.array([pt[0][0], pt[0][1], pt[0][2]])
