@@ -938,14 +938,17 @@ def _fillet_boolean(b1, rad):
 
     Parameters
     ----------
-
     b1 :
-    rad :
+    rad : float
+        Fillet radius
 
     Returns
     -------
-
     A solid
+    
+    Raises
+    ------
+    RuntimeError (StdFail_NotDone)
 
     """
     new_edges = b1.SectionEdges()
@@ -955,7 +958,7 @@ def _fillet_boolean(b1, rad):
         b2.Add(rad, _TopoDS_edge(iterator.Value()))
         iterator.Next()
     # b2 OCC.Core.BRepFilletAPI.BRepFilletAPI_MakeFillet
-    # TODO : RuntimeError  StdFaile_NotDone
+    # TODO : RuntimeError  StdFail_NotDone
     b3 = b2.Shape()
     return Solid(b3)
 
@@ -4747,6 +4750,7 @@ def offset(s1, dist, tolerance=1e-3, join='arc', mode='skin'):
     tolerance : float, optional (default is 1e-3)
     join : str, optional (default is 'arc')
     mode : str, optional (default is 'skin')
+
     """
     j = {'arc': _GeomAbs.GeomAbs_Arc,
          'tan': _GeomAbs.GeomAbs_Tangent,
@@ -4807,4 +4811,6 @@ def offset(s1, dist, tolerance=1e-3, join='arc', mode='skin'):
 
     else:
         # print('Error: Only solid or face allowed for offset')
-        logger.error('Error: Only solid or face allowed for offset')
+        msg = 'Error: Only solid or face allowed for offset'
+        logger.error(msg)
+        raise ValueError(msg)

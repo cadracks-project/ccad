@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # coding: utf-8
 
 """
@@ -13,6 +14,7 @@ License
 -------
 Distributed under the GNU LESSER GENERAL PUBLIC LICENSE Version 3.
 View LICENSE for details.
+
 """
 
 import unittest
