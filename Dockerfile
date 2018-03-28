@@ -1,4 +1,4 @@
-FROM continuumio/miniconda3
+FROM continuumio/miniconda3:4.4.10
 
 MAINTAINER Guillaume Florent <florentsailing@gmail.com>
 
@@ -10,7 +10,8 @@ RUN apt-get update && \
     apt-get install -y software-properties-common && \
     add-apt-repository ppa:ubuntu-toolchain-r/test && \
     apt-get update && \
-    apt-get install -y --allow-unauthenticated wget git build-essential libgl1-mesa-dev libfreetype6-dev libglu1-mesa-dev libzmq3-dev libsqlite3-dev libboost-all-dev libicu-dev python3-dev libgl2ps-dev libfreeimage-dev libtbb-dev g++ libopenblas-dev
+    apt-get install -y --allow-unauthenticated wget git build-essential libgl1-mesa-dev libfreetype6-dev libglu1-mesa-dev libzmq3-dev libsqlite3-dev libboost-all-dev libicu-dev python3-dev libgl2ps-dev libfreeimage-dev libtbb-dev g++ libopenblas-dev && \
+    rm -rf /var/lib/apt/lists/*
 RUN conda update -y conda && conda install -y -c conda-forge cmake=3.10.0 swig==3.0.12 ninja=1.8.2
 
 # oce
@@ -53,7 +54,8 @@ RUN cmake -G Ninja \
     ninja install
 
 # Run pythonocc tests
-RUN cd /opt/build/pythonocc-core/test && python core_wrapper_features_unittest.py
+WORKDIR /opt/build/pythonocc-core/test
+RUN python core_wrapper_features_unittest.py
 
 # Other conda packages
 RUN conda install -y numpy
@@ -66,4 +68,4 @@ ADD https://api.github.com/repos/osv-team/ccad/git/refs/heads/master version.jso
 RUN git clone --depth=1 https://github.com/osv-team/ccad
 RUN cp -r /opt/build/ccad/ccad /opt/conda/lib/python3.6/site-packages
 
-# RUN python /opt/build/ccad/unittest/test_all.py
+RUN python /opt/build/ccad/unittest/test_all.py

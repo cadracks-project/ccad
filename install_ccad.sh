@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-username="$USER"
-user="$(id -u)"
+# username="$USER"
+# user="$(id -u)"
 home="${1:-$HOME}"
 
 imageName="guillaume-florent/ccad:latest"

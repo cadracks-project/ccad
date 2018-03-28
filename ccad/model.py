@@ -945,7 +945,7 @@ def _fillet_boolean(b1, rad):
     Returns
     -------
     A solid
-    
+
     Raises
     ------
     RuntimeError (StdFail_NotDone)
