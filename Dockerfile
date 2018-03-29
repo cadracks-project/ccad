@@ -59,8 +59,15 @@ RUN python core_wrapper_features_unittest.py
 
 # Other conda packages
 RUN conda install -y numpy
-RUN conda install -y matplotlib
+
+# Funily, installing libgtk2.0-0 seems to solve the XCB plugin not found issue for Qt !!
+RUN apt-get update && apt-get install -y libgtk2.0-0 && rm -rf /var/lib/apt/lists/*
+RUN conda install -y -c anaconda wxpython
+
 RUN conda install -y pyqt
+RUN apt-get update && apt-get install -y libgl1-mesa-dev libx11-xcb1 && rm -rf /var/lib/apt/lists/*
+
+RUN conda install -y matplotlib
 
 # ccad
 WORKDIR /opt/build

@@ -4,7 +4,7 @@
 Description
 ----------
 ccad modeller designed to be imported from a python prompt or program.
-View README.md for a full description of ccad.
+View README.rst for a full description of ccad.
 
 model.py contains classes and functions for modelling.
 
