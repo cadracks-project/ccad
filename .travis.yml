@@ -1,0 +1,10 @@
+sudo: required
+
+services:
+  - docker
+
+install:
+  - docker build --tag guillaume-florent/ccad:latest .
+
+script:
+  - docker run --name ccad guillaume-florent/ccad:latest python /opt/build/ccad/unittest/test_all.py

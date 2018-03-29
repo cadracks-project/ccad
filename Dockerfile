@@ -75,4 +75,4 @@ ADD https://api.github.com/repos/osv-team/ccad/git/refs/heads/master version.jso
 RUN git clone --depth=1 https://github.com/osv-team/ccad
 RUN cp -r /opt/build/ccad/ccad /opt/conda/lib/python3.6/site-packages
 
-RUN python /opt/build/ccad/unittest/test_all.py
+# RUN python /opt/build/ccad/unittest/test_all.py
