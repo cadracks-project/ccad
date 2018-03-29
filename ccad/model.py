@@ -1268,7 +1268,7 @@ def _convert_import(s):
 
     """
     stype = _raw_type(s)
-    logger.debug("stype of raw shape is %s" % stype)
+    #logger.debug("stype of raw shape is %s" % stype)
     if stype in ['Solid', 'compound', 'compsolid']:
         return Solid(s)
     elif stype == 'shape':
@@ -1824,7 +1824,7 @@ class Part(object):
         module = imp.load_source(name, "tmp.py")
         solid = module.part
         anchors = module.anchors
-        logger.debug("solid has type: %s" % type(solid))
+        #logger.debug("solid has type: %s" % type(solid))
         os.remove("tmp.py")
         return cls(solid, origin="%s/%s.py" % (url, name)), anchors
 
@@ -2263,7 +2263,8 @@ class Shape(object):
         """
         Reverses a shape's orientation
         """
-        self.shape.Reverse()
+        #self.shape.Reverse()
+        self.shape = self.shape.Reversed()
 
     def _raw(self, raw_type):
         """
