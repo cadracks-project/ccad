@@ -1,4 +1,9 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7a33b7bb47c74733b848b5b382a7e5ca)](https://www.codacy.com/app/guillaume-florent/ccad?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=osv-team/ccad&amp;utm_campaign=Badge_Grade)
+****
+ccad
+****
+
+.. image:: https://api.codacy.com/project/badge/Grade/7a33b7bb47c74733b848b5b382a7e5ca
+   :target: https://www.codacy.com/app/guillaume-florent/ccad?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=osv-team/ccad&amp;utm_campaign=Badge_Grade
 
 Description
 ===========
@@ -10,42 +15,48 @@ prompt.  Once imported, you can create and view mechanical objects.
 ccad is a python wrapper of pythonocc.  No knowledge of pythonocc is
 necessary to operate ccad.
 
-To Install (Linux)
-==================
+Install
+=======
 
-Make sure you have working copies of pythonocc and python-qt4.  Then::
+This is the old installation documentation, to view the new Docker based procedures
+please see `INSTALL.rst <./INSTALL.rst>`_
 
-  Download and unzip the .zip file from github
+Linux
+-----
 
-  cd ccad-master
+Make sure you have working copies of pythonocc and python-qt4.  Then:
 
-  python setup.py install --prefix=/usr/local (as root)
+- Download and unzip the .zip file from github
+
+- cd ccad-master
+
+- python setup.py install --prefix=/usr/local (as root)
 
 Change the prefix argument to install in a different directory.
 
-To Install (Windows)
-====================
+Windows
+-------
 
-Make sure you have working copies of pythonocc and python-qt4.  Then::
+Make sure you have working copies of pythonocc and python-qt4.  Then:
 
-  Download the .zip file from github
+- Download the .zip file from github
 
-  From a file explorer window, right-click on the downloaded zip file
+- From a file explorer window, right-click on the downloaded zip file
   and select "extract here"
 
-  Navigate to the folder just created
+- Navigate to the folder just created
 
-  Shift-right-click in the file explorer window and select "open
+- Shift-right-click in the file explorer window and select "open
   command window here"
 
-  Type the following command:
+- Type the following command:
   python setup.py install
 
 For interactive mode, use ipython or run python from a command window.
 ccad does *not* work under Idle.
 
-To Install (Mac)
-================
+Mac
+---
 
 While ccad should work for Mac, we haven't heard of anyone trying it.
 If you install it, let us know, and we'll update the README.
@@ -53,21 +64,26 @@ If you install it, let us know, and we'll update the README.
 To Operate
 ==========
 
-Start python from the command line.  Then::
+Start python from the command line.  Then:
 
-  >>> import ccad.model as cm
-  >>> import ccad.display as cd
-  >>> s1 = cm.sphere(1.0)
-  >>> v1 = cd.view()
-  >>> v1.display(s1)
+.. code-block:: python
+
+  import ccad.model as cm
+  import ccad.display as cd
+  s1 = cm.sphere(1.0)
+  v1 = cd.view()
+  v1.display(s1)
 
 You should see a sphere displayed in a window.
 
 Consult the documentation at prefix/share/doc/ccad/html/contents.html
 for ccad's full capabilities.
 
-To Build (only for developers)
-==============================
+Developpers only
+================
+
+Build
+-----
 
 Update components with modifications to MANIFEST.in and setup.py.
 Then,
@@ -77,8 +93,8 @@ Then,
 **Make sure you verify changes with unittest/test_all.py before
 committing.**
 
-To Build the Documentation (only for developers)
-================================================
+Build the Documentation
+-----------------------
 
 Some files are captured with xwd (window dump).  They're commented in
 MANIFEST.in.  The remaining are generated with generate_images.py.
@@ -89,8 +105,8 @@ MANIFEST.in.  The remaining are generated with generate_images.py.
 
 Then, direct your browser to ccad-ver/doc/html/contents.html
 
-Philosophy (only for developers)
-================================
+Philosophy
+----------
 
 1. Edges are continuous lines in 3D space.  There should be no reason
    to distinguish between them and OCC curves.  Wires are collections
