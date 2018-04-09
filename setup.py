@@ -41,10 +41,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6'],
     keywords='OpenCASCADE pythonocc CAD',
-    packages=['ccad',
-              'ccad.display',
-              'ccad.model',
-              'ccad.planarnet'],
+    packages=['ccad'],
     install_requires=[],
     extras_require={
         'dev': [],
