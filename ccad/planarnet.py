@@ -229,10 +229,12 @@ class PlanarNet(nx.Graph):
 
         Returns
         -------
+
         A solid or a compound of faces
 
         Notes
         -----
+
         This method fold the planar net w.r.t to the edge angles.
         It yields a shell member
 
@@ -260,10 +262,12 @@ class PlanarNet(nx.Graph):
             ln0 = lgraphs[0].node.keys()
             ln1 = lgraphs[1].node.keys()
             self.add_edge(if0, if1, angle=ag, iedge=iedge)
+
             if if1 in ln1:
                 lfaces1 = ln1
             else:
                 lfaces1 = ln0
+
             # fold all faces in set lfaces1
             for f in lfaces1:
                 self.lfaces[f] = cm.rotated(self.lfaces[f], pabout, pdir, angle)
@@ -281,17 +285,20 @@ class PlanarNet(nx.Graph):
         else:
             self.folded = True
             asolid = cm.Solid([self.shell])
-            if asolid.check():
-                vertices = asolid.subshapes('Vertex')
-                edges = asolid.subshapes('Edge')
-                faces = asolid.subshapes('Face')
-                Euler = len(vertices)-len(edges)+len(faces)
-                print("closed shape")
-                print("V",len(vertices))
-                print("E",len(edges))
-                print("F",len(faces))
-                print("Euler check (2): V-E+F :",Euler)
+            vertices = asolid.subshapes('Vertex')
+            edges = asolid.subshapes('Edge')
+            faces = asolid.subshapes('Face')
 
+            Euler = len(vertices)-len(edges)+len(faces)
+
+            print("V", len(vertices))
+            print("E", len(edges))
+            print("F", len(faces))
+            print("Euler check (2): V-E+F :", Euler)
+
+            if asolid.check():
+                print("closed shape")
+                # update the graph 
             else:
                 print("open shape")
 
