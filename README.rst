@@ -8,9 +8,6 @@ ccad
 .. image:: https://api.codacy.com/project/badge/Grade/7a33b7bb47c74733b848b5b382a7e5ca
     :target: https://www.codacy.com/app/guillaume-florent/ccad?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=osv-team/ccad&amp;utm_campaign=Badge_Grade
 
-.. image:: https://coveralls.io/repos/github/osv-team/ccad/badge.svg?branch=master
-    :target: https://coveralls.io/github/osv-team/ccad?branch=master
-
 
 Description
 ===========
