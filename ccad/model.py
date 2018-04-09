@@ -170,6 +170,60 @@ def _unitary(s1, U):
 
     The transformed shape
 
+    """
+
+    #flip = False
+    #if np.isclose(la.det(U), -1):
+    #    U[:,2] = -U[:,2]
+    #    flip = True
+
+    M = np.identity(4)
+    M[:3,:3] = U
+    s2 = transformed(s1,M)
+    #print("center s1 :",s1.center())
+    #if flip:
+    #   s2 = mirroredz(s1)
+       #s2 = mirrored(s1,(0,0,0),(1,0,0))
+    #   print("center s2 :",s1.center())
+
+
+    return s2.shape
+
+
+def _translate(s1, pdir):
+    r"""Translate s1 in pdir
+
+    Parameters
+    ----------
+    s1
+    pdir
+
+    Returns
+    -------
+    The translated shape
+
+    """
+    m = _gp.gp_Trsf()
+    m.SetTranslation(_gp.gp_Vec(pdir[0], pdir[1], pdir[2]))
+    trf = _BRepBuilderAPI.BRepBuilderAPI_Transform(m)
+    trf.Perform(s1.shape, True)
+    return trf.Shape()
+
+def _unitary_old(s1, U):
+    r""" unitary transformation
+
+    Parameters
+    ----------
+
+    s1 : shape
+    U : np.array() 3 x 3
+        unitary matrix to apply  (det = +/- 1)
+
+    Returns
+    -------
+
+    The transformed shape
+
 
     """
     m = _gp.gp_Trsf()
@@ -203,7 +257,10 @@ def _unitary(s1, U):
     m.SetTransformation(Ax3)
     trf = _BRepBuilderAPI.BRepBuilderAPI_Transform(m)
     trf.Perform(s1.shape, True)
-    return trf.Shape()
+   #if np.isclose(la.det(U), -1):
+    #    s2 = s2.Reversed()
+
+    return trf.Shape() 
 
 
 def _translate(s1, pdir):
@@ -317,14 +374,14 @@ def transformed(s1, matrix):
     return s2
 
 
-def unitary(s1, matrix):
+def unitaryed(s1, matrix):
     r"""
-    Returns a new shape which is s1 translated (moved).
+    Returns a new shape which is s1 unitary transformes.
 
     Parameters
     ----------
-    s1
-    matrix
+    s1 : shape
+    matrix : np.array 3x3
 
     Returns
     -------
@@ -3045,7 +3102,7 @@ class Face(Shape):
 
     def normal(self):
         """ determine the face normal
-        TODO : Implement is using OCC primitive
+
         """
         # w = self.subshapes('Wire')
         #_ = self.subshapes('Wire')
@@ -3065,7 +3122,6 @@ class Face(Shape):
         # pl = Handle_Geom_Plane_DownCast(surf)
         # pln = pl.GetObject()
         # norm = pln.Axis().Direction()
-
         # return norm
 
     def center(self):
