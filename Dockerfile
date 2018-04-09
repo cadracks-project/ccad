@@ -14,5 +14,5 @@ RUN conda install -y numpy matplotlib wxpython pyqt pytest
 WORKDIR /opt
 ADD https://api.github.com/repos/osv-team/ccad/git/refs/heads/master version.json
 RUN git clone --depth=1 https://github.com/osv-team/ccad
-WORKDIR /opt/aoc-utils
+WORKDIR /opt/ccad
 RUN python setup.py install
