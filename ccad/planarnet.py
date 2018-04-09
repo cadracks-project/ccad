@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+r"""Planar net"""
+
 from __future__ import print_function
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -10,8 +15,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class PlanarNet(nx.Graph):
-    def __init__(self,**kwargs):
+    def __init__(self, **kwargs):
         """
 
         Parameters
@@ -23,48 +29,50 @@ class PlanarNet(nx.Graph):
 
         """
         self.folded = False
-        pt = kwargs.pop('pt',[])
-        N  = kwargs.pop('N',3)
-        self.l  = kwargs.pop('l',1)
-        if pt==[]:
-            al = (N-2)*np.pi/(2*N)
-            self.r = np.sin(al)/np.sin(2*np.pi/N)
-            self.s = np.sqrt(self.r**2-self.l**2/4.)
-            t = np.linspace(0,N,N+1)
-            u = 2*np.pi*t/N
-            pt = self.r * np.c_[np.cos(u),np.sin(u)]
+        pt = kwargs.pop('pt', [])
+        N = kwargs.pop('N', 3)
+        self.l = kwargs.pop('l', 1)
+        if pt == []:
+            al = (N - 2) * np.pi / (2 * N)
+            self.r = np.sin(al) / np.sin(2 * np.pi / N)
+            self.s = np.sqrt(self.r**2 - self.l**2/4.)
+            t = np.linspace(0, N, N+1)
+            u = 2 * np.pi * t / N
+            pt = self.r * np.c_[np.cos(u), np.sin(u)]
         N = pt.shape[0]
         # conversion to 3D
-        self.pt = np.c_[pt[:,0],pt[:,1],np.zeros(N)]
+        self.pt = np.c_[pt[:, 0], pt[:, 1], np.zeros(N)]
         w0 = cm.polygon(self.pt)
         face0 = cm.plane(w0)
         self.lfaces = [face0]
         self.nnode = 1
         nx.Graph.__init__(self)
         self.add_node(0,normal=face0.normal())
-        self.pos = {}
+        self.add_node(0)
+        self.pos = dict()
         self.pos[0] = face0.center()[0:2]
 
     def __repr__(self):
         st = 'PlanarNet :' + str(self.nnode) + '\n'
         if self.folded:
-            st = st +'Folded\n'
+            st = st + 'Folded\n'
         for f in self.lfaces:
             st = st + f.__repr__()
         return st
 
-    def __add__(self,other):
+    def __add__(self, other):
         # nodes relabeling
         if not (self.folded ^ other.folded):
             offset_nodes = np.max(np.array(self.node.keys()))+1
             other_nodes = np.array(self.node.keys())
             other_nodes_offset = other_nodes + offset_nodes
-            mapping = dict(zip(list(other_nodes),list(other_nodes_offset)))
-            other_translated = nx.relabel_nodes(other,mapping)
+            mapping = dict(zip(list(other_nodes), list(other_nodes_offset)))
+            other_translated = nx.relabel_nodes(other, mapping)
             other_translated.remove_node(0)
-            other_translated.pos = dict(zip(list(other_nodes_offset),other.pos.values()))
+            other_translated.pos = dict(zip(list(other_nodes_offset),
+                                            other.pos.values()))
             # graphs composition
-            new = nx.compose(self,other_translated)
+            new = nx.compose(self, other_translated)
             pos = copy.copy(self.pos)
             other_translated_pos = other_translated.pos
             pos.update(other_translated_pos)
@@ -76,12 +84,13 @@ class PlanarNet(nx.Graph):
 
             return new
         else:
-            logger.error('Impossible to add 2 PlanarNet with different folded status')
+            logger.error('Impossible to add 2 PlanarNet '
+                         'with different folded status')
 
     def __copy__(self):
-        return(self)
+        return self
 
-    def translated(self,pdir):
+    def translated(self, pdir):
         """ translation along pdir
 
         Parameter
@@ -90,13 +99,13 @@ class PlanarNet(nx.Graph):
 
         """
         new = copy.deepcopy(self)
-        new.shell = cm.translated(self.shell,pdir)
+        new.shell = cm.translated(self.shell, pdir)
         new.lfaces = new.shell.subshapes('Face')
-        for k,f in enumerate(new.lfaces):
+        for k, f in enumerate(new.lfaces):
             new.pos[k] = f.center()[0:2]
-        return(new)
+        return new
 
-    def rotated(self,pabout,angle):
+    def rotated(self, pabout, angle):
         pass
 
 
@@ -104,22 +113,24 @@ class PlanarNet(nx.Graph):
         """ plot planarnet
 
         """
+
         bnodes = kwargs.pop('bnodes',False)
         bedges = kwargs.pop('bedges',False)
         blabels = kwargs.pop('blabels',False)
+
         for f in self.lfaces:
             f.plot(**kwargs)
-            for k,e in enumerate(f.subshapes('Edge')):
+            for k, e in enumerate(f.subshapes('Edge')):
                 eps = self.l/15.
-                xe , ye = e.center()[0:2]
+                xe, ye = e.center()[0:2]
                 lv = e.subshapes('Vertex')
                 p0 = np.array(lv[0].center())
                 p1 = np.array(lv[1].center())
                 pdir = p1-p0
-                norm = np.cross(pdir,np.array([0,0,1]))
+                norm = np.cross(pdir, np.array([0, 0, 1]))
                 norm = norm/np.linalg.norm(norm)
-                plt.annotate(str(k), xy=(xe,ye),
-                             xytext=(xe-norm[0]*eps,ye-norm[1]*eps),
+                plt.annotate(str(k), xy=(xe, ye),
+                             xytext=(xe-norm[0]*eps, ye-norm[1]*eps),
                              color='b')
         if bnodes:
             nx.draw_networkx_nodes(self, self.pos, node_color='b', node_size=50, alpha=0.5)
@@ -159,12 +170,11 @@ class PlanarNet(nx.Graph):
         ed = self.lfaces[iface].subshapes('Edge')[iedge]
         points = ed.poly()
         vedge = np.array(points[1]) - np.array(points[0])
-        axed = np.cross(vedge,np.array([0,0,1]))
+        axed = np.cross(vedge, np.array([0, 0, 1]))
         # mirror new face w.r.t axed
-        new_face = cm.mirrored(new_face,ed.center(),axed)
+        new_face = cm.mirrored(new_face, ed.center(), axed)
         # modify normal orientation
-        new_face = cm.rotated(new_face,new_face.center(),(1,0,0),np.pi)
-
+        new_face = cm.rotated(new_face, new_face.center(), (1, 0, 0), np.pi)
 
         # append new face in PlanarNet.lfaces
         # update underlying graph
@@ -214,17 +224,15 @@ class PlanarNet(nx.Graph):
         self.add_edge(iface, node_num, angle=angle, iedge=iedge)
         self.shell = cm.Shell(self.lfaces)
 
-    def fold(self,reverse=False):
+    def fold(self, reverse=False):
         """ fold edges of the PlanarNet
 
         Returns
         -------
-
-        A solid or a coumpound of faces
+        A solid or a compound of faces
 
         Notes
         -----
-
         This method fold the planar net w.r.t to the edge angles.
         It yields a shell member
 
@@ -246,19 +254,19 @@ class PlanarNet(nx.Graph):
             pabout = ed.center()
 
             # create 2 subgraphs
-            self.remove_edge(if0,if1)
+            self.remove_edge(if0, if1)
             lgraphs = list(nx.connected_component_subgraphs(nx.Graph(self)))
 
             ln0 = lgraphs[0].node.keys()
             ln1 = lgraphs[1].node.keys()
-            self.add_edge(if0,if1,angle=ag,iedge=iedge)
+            self.add_edge(if0, if1, angle=ag, iedge=iedge)
             if if1 in ln1:
                 lfaces1 = ln1
             else:
                 lfaces1 = ln0
             # fold all faces in set lfaces1
             for f in lfaces1:
-                self.lfaces[f] = cm.rotated(self.lfaces[f],pabout,pdir,angle)
+                self.lfaces[f] = cm.rotated(self.lfaces[f], pabout, pdir, angle)
 
         # update faces centroid in the Graph
 
@@ -289,7 +297,7 @@ class PlanarNet(nx.Graph):
 
             return asolid
 
-    def display(self,folded=True):
+    def display(self, folded=True):
         viewer = cd.view()
         if folded:
             viewer.display(self.shell)

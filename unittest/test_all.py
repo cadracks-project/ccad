@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import sys
+
 """
 Description
 -----------
@@ -8,7 +10,8 @@ ccad unittest.  View ../model.py for a full description of ccad.
 
 Author
 ------
-Charles Sharman
+Charles Sharman, modified by Guillaume Florent to get a non zero exit code
+when any test fails
 
 License
 -------
@@ -23,4 +26,7 @@ import model_unittest
 
 suite = unittest.TestSuite()
 suite.addTests([model_unittest.suite()])
-unittest.TextTestRunner(verbosity=2).run(suite)
+runner = unittest.TextTestRunner(verbosity=2)
+result = runner.run(suite)
+# Return a non zero exit code if any test fails
+sys.exit(not result.wasSuccessful())

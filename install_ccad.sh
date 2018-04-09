@@ -16,7 +16,6 @@ docker run  -it -d --name ${containerName}                  \
     -e DISPLAY=${displayVar}                                \
     --workdir="${home}"                                     \
     --volume="${home}:${home}"                              \
-    -p 8888:8888                                            \
      -v=/tmp/.X11-unix:/tmp/.X11-unix ${imageName}          \
      /bin/bash
 

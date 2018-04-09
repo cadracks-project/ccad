@@ -1,0 +1,21 @@
+sudo: required
+
+git:
+  depth: 3
+
+services:
+  - docker
+
+# A build on Travis CI is made up of two steps:
+#    install: install any dependencies required
+#    script: run the build script
+
+install:
+  - docker build --tag guillaume-florent/ccad:latest .
+
+#  A job fails if the return code of the script phase is non zero.
+script:
+  - docker run --name ccad guillaume-florent/ccad:latest /bin/bash -c "cd /opt/build/ccad/unittest;python -m unittest test_all"
+
+after_script:
+  - docker images

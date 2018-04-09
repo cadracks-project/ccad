@@ -21,5 +21,5 @@ __author__ = "Charles Sharman, Thomas Paviot, Doug Blanding, Marko Knobl," \
              "Bernard Uguen, Guillaume Florent"
 __author_email__ = ""
 __license__ = 'GPL v3'
-__url__ = "https://github.com/guillaume-florent/ccad"
-__download_url__ = "https://github.com/guillaume-florent/ccad/releases/tag/" + __version__
+__url__ = "https://github.com/osv-team/ccad"
+__download_url__ = "https://github.com/osv-team/ccad/releases/tag/" + __version__

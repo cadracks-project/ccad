@@ -1,46 +1,52 @@
+#!/usr/bin/env python
 # coding: utf-8
 
-"""
-Description
------------
-distutils setup.py for ccad.  View model.py for a full description of
-ccad.
+"""setuptools based setup module for ccad
 
-Author
-------
-View AUTHORS.
-
-License
--------
-Distributed under the GNU LESSER GENERAL PUBLIC LICENSE Version 3.
-View LICENSE for details.
+View model.py for a full description of ccad.
 
 """
 
-# import os
-# import sys
-import glob
+from setuptools import setup
+# To use a consistent encoding
+import codecs
+from os import path
 
-from distutils.core import setup
-# import distutils.dir_util
-# import distutils.sysconfig
+import ccad
 
-name = 'ccad'
-version = '0.13'  # Change also in display.py, doc/conf.py
+here = path.abspath(path.dirname(__file__))
 
-# Include the documentation
-prefix = 'share/doc/ccad/'  # Don't like including the share prefix.
-                            # Probably too linux-specific ***
-data_files = [(prefix + 'html', glob.glob('doc/html/*.html')),
-              (prefix + 'html/_images', glob.glob('doc/html/_images/*')),
-              (prefix + 'html/_static', glob.glob('doc/html/_static/*')),
-              (prefix + 'html/_sources', glob.glob('doc/html/_sources/*'))]
+# Get the long description from the README file
+with codecs.open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+    long_description = f.read()
 
-# Install the module
-setup(name=name,
-      version=version,
-      url='UNKNOWN',
-      py_modules=['ccad.model', 'ccad.display', 'ccad.planarnet'],
-      package_dir={'ccad': './ccad'},
-      data_files=data_files,
-      requires=['OCC', 'PyQt4'])
+
+setup(
+    name=ccad.__name__,
+    version=ccad.__version__,
+    description=ccad.__description__,
+    long_description=long_description,
+    url=ccad.__url__,
+    download_url=ccad.__download_url__,
+    author=ccad.__author__,
+    author_email=ccad.__author_email__,
+    license=ccad.__license__,
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'Topic :: Software Development',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6'],
+    keywords='OpenCASCADE pythonocc CAD',
+    packages=['ccad'],
+    install_requires=[],
+    extras_require={
+        'dev': [],
+        'test': ['pytest', 'coverage'],
+    },
+    package_data={},
+    data_files=[],
+    entry_points={})
