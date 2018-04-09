@@ -15,7 +15,7 @@ install:
 
 #  A job fails if the return code of the script phase is non zero.
 script:
-  - docker run --name ccad guillaume-florent/ccad:latest /bin/bash -c "cd /opt/build/ccad/unittest;python -m unittest test_all"
+  - docker run --name ccad guillaume-florent/ccad:latest /bin/bash -c "cd /opt/ccad/unittest;python -m unittest test_all"
 
 after_script:
   - docker images
