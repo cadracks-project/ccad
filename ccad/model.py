@@ -260,7 +260,7 @@ def _unitary_old(s1, U):
    #if np.isclose(la.det(U), -1):
     #    s2 = s2.Reversed()
 
-    return trf.Shape() 
+    return trf.Shape()
 
 
 def _translate(s1, pdir):
@@ -3219,11 +3219,11 @@ class Shell(Shape):
     def __repr__(self):
         st = 'Shell\n_____\n'
         subs = self.subshapes('Face')
-        for k,sub in enumerate(subs):
+        for k, sub in enumerate(subs):
             st = st + 'Face : %d' % k+'\n'
             st = st + sub.__repr__()
 
-        return(st)
+        return st
 
     def center(self):
         r""" determine Shell center
@@ -3310,7 +3310,7 @@ class Solid(Shape):
         lfaces = self.subshapes('Face')
         for face in lfaces:
             st = st + face.__repr__()
-        return(st)
+        return st
 
     def __add__(self, other):
         return fuse(self, other)
@@ -4827,6 +4827,8 @@ def offset(s1, dist, tolerance=1e-3, join='arc', mode='skin'):
                 ex.Next()
         elif _raw_type(raw_shape) == 'Solid':
             ss.append(Solid(raw_shape))
+        elif _raw_type(raw_shape) == 'Shell':
+            ss.append(Solid([raw_shape]))
         else:
             # print('Warning: Unexpected type', _raw_type(raw_shape))
             logger.warning('Warning: Unexpected type %s' %
