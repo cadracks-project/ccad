@@ -230,13 +230,14 @@ class TestSolidFunctions(unittest.TestCase):
         # s2.translate((0.0, -2.0, -2.0))
         s3 = cm.fillet_common(s1, s2, 0.25)
         v3 = s3.volume()
+        print("v3 is %f" % v3)
         # print v3, 0.5*4.0/3.0*math.pi*1.0**3
         # empirical
-        v_box = 4. * 4. * 4.
-        v_sphere_outside_box = (4 / 3 * math.pi * 1**3) * 7. / 8.
+        # v_box = 4. * 4. * 4.
+        v_sphere_inside_box = (4. / 3. * math.pi * 1**3) / 8.
         self.assert_(close(v3,
                            # 0.5 * 4.0 / 3.0 * math.pi * 1.0 ** 3 - 0.127,
-                           v_box + v_sphere_outside_box,
+                           v_sphere_inside_box,
                            0.5))
 
     def test_chamfer_fuse(self):
