@@ -1255,6 +1255,7 @@ class TestArbitrary(unittest.TestCase):
         c1 = cm.cylinder(2.5, 20.0)
         c1.translate((0.0, 0.0, -5.0))
         s1 = b1 - c1
+        s1 = cm.Solid([s1])  # s1 is a Shell, convert to Solid
         s2 = cm.offset(s1, 1.0)
         print("s2 is : %s" % s2)
         s2 = s2[0]
