@@ -7,12 +7,13 @@ View model.py for a full description of ccad.
 
 """
 
-from setuptools import setup
+from setuptools import setup, find_packages
 # To use a consistent encoding
 import codecs
 from os import path
 
 import ccad
+import numpy
 
 here = path.abspath(path.dirname(__file__))
 
@@ -43,6 +44,7 @@ setup(
     keywords='OpenCASCADE pythonocc CAD',
     packages=['ccad'],
     install_requires=[],
+    include_dirs = [numpy.get_include()],
     extras_require={
         'dev': [],
         'test': ['pytest', 'coverage'],

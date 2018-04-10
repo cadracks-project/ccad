@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 class PlanarNet(nx.Graph):
     def __init__(self, **kwargs):
         """
+
         Parameters
         ----------
         pt : np.array (N x 2)
@@ -46,6 +47,7 @@ class PlanarNet(nx.Graph):
         self.lfaces = [face0]
         self.nnode = 1
         nx.Graph.__init__(self)
+        self.add_node(0,normal=face0.normal())
         self.add_node(0)
         self.pos = dict()
         self.pos[0] = face0.center()[0:2]
@@ -106,7 +108,16 @@ class PlanarNet(nx.Graph):
     def rotated(self, pabout, angle):
         pass
 
-    def plot(self, **kwargs):
+
+    def plot(self,**kwargs):
+        """ plot planarnet
+
+        """
+
+        bnodes = kwargs.pop('bnodes',False)
+        bedges = kwargs.pop('bedges',False)
+        blabels = kwargs.pop('blabels',False)
+
         for f in self.lfaces:
             f.plot(**kwargs)
             for k, e in enumerate(f.subshapes('Edge')):
@@ -121,15 +132,34 @@ class PlanarNet(nx.Graph):
                 plt.annotate(str(k), xy=(xe, ye),
                              xytext=(xe-norm[0]*eps, ye-norm[1]*eps),
                              color='b')
-        nx.draw_networkx_nodes(self, self.pos,
-                               node_color='b',
-                               node_size=50,
-                               alpha=0.5)
-        nx.draw_networkx_edges(self, self.pos, width=3, edge_color='k')
-        lpos = {k: (self.pos[k][0]+0.05, self.pos[k][1]+0.05) for k in self.pos}
-        nx.draw_networkx_labels(self, lpos, font_size=18)
+        if bnodes:
+            nx.draw_networkx_nodes(self, self.pos, node_color='b', node_size=50, alpha=0.5)
+        if bedges:
+            nx.draw_networkx_edges(self, self.pos, width=3, edge_color='k')
 
-    def tile(self, iface=0, iedge=0, angle=np.pi):
+        lpos = { k : (self.pos[k][0]+0.05, self.pos[k][1]+0.05) for k in self.pos}
+
+        if blabels:
+            nx.draw_networkx_labels(self, lpos, font_size=18)
+
+    def replicate(self, iface=0, iedge=0, angle=np.pi):
+        """  replicate face iface along edge iedge
+
+        Parameters
+        ----------
+
+        iface : int
+            face index
+        iedge : int
+            edge index
+        angle : float
+            folding angle
+
+        Notes
+        -----
+        add a node in the graph
+
+        """
         self.nnode = self.nnode + 1
         # create a new face from face with index iface
         new_face = self.lfaces[iface].copy()
@@ -151,8 +181,45 @@ class PlanarNet(nx.Graph):
         # node position at centroid of the face
 
         self.lfaces.append(new_face)
-        node_num = self.nnode-1
-        self.add_node(node_num)
+        node_num = self.nnode - 1
+        self.add_node(node_num,normal=new_face.normal())
+        self.pos[node_num] = new_face.center()[0:2]
+        self.add_edge(iface, node_num, angle=angle, iedge=iedge)
+        self.shell = cm.Shell(self.lfaces)
+
+    def expand(self,iface,iedge,nedges,sign=1,angle=np.pi):
+        """ expand face iface along edge iedge
+
+        Parameters
+        ----------
+        iface : int
+        iedge : int
+        nedges : int
+        angle : float
+
+        """
+
+        self.nnode = self.nnode + 1
+        # get the selected edge of the selected face
+        ed = self.lfaces[iface].subshapes('Edge')[iedge]
+        points = ed.poly()
+        z0 = points[0][0]+1j*points[0][1]
+        z1 = points[1][0]+1j*points[1][1]
+
+        lz = [z0, z1]
+        for  k in range(nedges-2):
+            dz = lz[-2]-lz[-1]
+            lz.append(lz[-1]+ np.abs(dz)*np.exp(1j*(np.angle(dz)+sign*(nedges-2)*np.pi/nedges)))
+        lpts = []
+        for k in range(nedges):
+            lpts.append((np.real(lz[k]),np.imag(lz[k]),0.0))
+        lpts.append(lpts[0])
+        new_face = cm.plane(cm.polygon(lpts))
+        if new_face.normal()[2]==-1:
+            new_face = cm.plane(cm.polygon(lpts[::-1]))
+        self.lfaces.append(new_face)
+        node_num = self.nnode - 1
+        self.add_node(node_num,normal=new_face.normal())
         self.pos[node_num] = new_face.center()[0:2]
         self.add_edge(iface, node_num, angle=angle, iedge=iedge)
         self.shell = cm.Shell(self.lfaces)
@@ -162,14 +229,17 @@ class PlanarNet(nx.Graph):
 
         Returns
         -------
+
         A solid or a compound of faces
 
         Notes
         -----
+
         This method fold the planar net w.r.t to the edge angles.
         It yields a shell member
 
         """
+
         for edge in self.edges():
             if0 = edge[0]
             if1 = edge[1]
@@ -192,10 +262,12 @@ class PlanarNet(nx.Graph):
             ln0 = lgraphs[0].node.keys()
             ln1 = lgraphs[1].node.keys()
             self.add_edge(if0, if1, angle=ag, iedge=iedge)
+
             if if1 in ln1:
                 lfaces1 = ln1
             else:
                 lfaces1 = ln0
+
             # fold all faces in set lfaces1
             for f in lfaces1:
                 self.lfaces[f] = cm.rotated(self.lfaces[f], pabout, pdir, angle)
@@ -213,6 +285,23 @@ class PlanarNet(nx.Graph):
         else:
             self.folded = True
             asolid = cm.Solid([self.shell])
+            vertices = asolid.subshapes('Vertex')
+            edges = asolid.subshapes('Edge')
+            faces = asolid.subshapes('Face')
+
+            Euler = len(vertices)-len(edges)+len(faces)
+
+            print("V", len(vertices))
+            print("E", len(edges))
+            print("F", len(faces))
+            print("Euler check (2): V-E+F :", Euler)
+
+            if asolid.check():
+                print("closed shape")
+                # update the graph 
+            else:
+                print("open shape")
+
             return asolid
 
     def display(self, folded=True):
@@ -226,8 +315,8 @@ class PlanarNet(nx.Graph):
 if __name__ == "__main__":
     p1 = PlanarNet()
     alpha = np.pi-np.arccos(1/3.)
-    p1.tile(iedge=0, angle=alpha)
-    p1.tile(iedge=1, angle=alpha)
-    p1.tile(iedge=2, angle=alpha)
+    p1.replicate(iedge=0, angle = alpha)
+    p1.replicate(iedge=1, angle = alpha)
+    p1.replicate(iedge=2, angle = alpha)
     tetra = p1.fold()
     tetra.to_html('tetraedre.html')
