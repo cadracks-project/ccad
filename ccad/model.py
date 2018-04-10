@@ -3470,21 +3470,21 @@ class Solid(Shape):
         return g1.Mass()  # Returns volume when density hasn't been set
 
     def bounding_box(self):
-        #vertices = self.subshapes('Vertex')
-        #pts = np.array([])
-        #pts.shape = (0,3)
-        #for vertex in vertices:
-        #    pt = np.array(vertex.center())[None,:]
-        #    pts = np.vstack((pts,pt))
-        #xmin = np.min(pts[:,0])
-        #xmax = np.max(pts[:,0])
-        #ymin = np.min(pts[:,1])
-        #ymax = np.max(pts[:,1])
-        #zmin = np.min(pts[:,2])
-        #zmax = np.max(pts[:,2])
-        #bb = np.array([[xmin,ymin,zmin],[xmax,ymax,zmax]])
-        bb = np.array(self.bounds()).reshape(2,3)
-        return(bb)
+        # vertices = self.subshapes('Vertex')
+        # pts = np.array([])
+        # pts.shape = (0,3)
+        # for vertex in vertices:
+        #     pt = np.array(vertex.center())[None,:]
+        #     pts = np.vstack((pts,pt))
+        # xmin = np.min(pts[:,0])
+        # xmax = np.max(pts[:,0])
+        # ymin = np.min(pts[:,1])
+        # ymax = np.max(pts[:,1])
+        # zmin = np.min(pts[:,2])
+        # zmax = np.max(pts[:,2])
+        # bb = np.array([[xmin,ymin,zmin],[xmax,ymax,zmax]])
+        bb = np.array(self.bounds()).reshape(2, 3)
+        return bb
 
     def simplify(self, skip_edges=0, skip_faces=0, skip_fits=0,
                  stopat=-1, tolerance=1e-3):

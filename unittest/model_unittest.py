@@ -219,18 +219,21 @@ class TestSolidFunctions(unittest.TestCase):
         # print v3, 0.5*4.0/3.0*math.pi*1.0**3
         # empirical
         self.assert_(close(v3,
-                           0.5 * 4.0 / 3.0 * math.pi * 1.0 ** 3 - 0.127, 0.1))
+                           0.5 * 4.0 / 3.0 * math.pi * 1.0 ** 3 - 0.127,
+                           0.1))
 
     def test_fillet_common(self):
         s1 = cm.sphere(1.0)
         s2 = cm.box(4.0, 4.0, 4.0)
-        s2.translate((0.0, -2.0, -2.0))
+        # Translating causes the box and the sphere to have nothing in common :
+        # s2.translate((0.0, -2.0, -2.0))
         s3 = cm.fillet_common(s1, s2, 0.25)
         v3 = s3.volume()
         # print v3, 0.5*4.0/3.0*math.pi*1.0**3
         # empirical
         self.assert_(close(v3,
-                           0.5 * 4.0 / 3.0 * math.pi * 1.0 ** 3 - 0.127, 0.1))
+                           0.5 * 4.0 / 3.0 * math.pi * 1.0 ** 3 - 0.127,
+                           0.1))
 
     def test_chamfer_fuse(self):
         s1 = cm.sphere(1.0)
