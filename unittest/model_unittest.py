@@ -225,15 +225,19 @@ class TestSolidFunctions(unittest.TestCase):
     def test_fillet_common(self):
         s1 = cm.sphere(1.0)
         s2 = cm.box(4.0, 4.0, 4.0)
+        # Issue #9:
         # Translating causes the box and the sphere to have nothing in common :
         # s2.translate((0.0, -2.0, -2.0))
         s3 = cm.fillet_common(s1, s2, 0.25)
         v3 = s3.volume()
         # print v3, 0.5*4.0/3.0*math.pi*1.0**3
         # empirical
+        v_box = 4. * 4. * 4.
+        v_sphere_outside_box = (4 / 3 * math.pi * 1**3) * 7. / 8.
         self.assert_(close(v3,
-                           0.5 * 4.0 / 3.0 * math.pi * 1.0 ** 3 - 0.127,
-                           0.1))
+                           # 0.5 * 4.0 / 3.0 * math.pi * 1.0 ** 3 - 0.127,
+                           v_box + v_sphere_outside_box,
+                           0.5))
 
     def test_chamfer_fuse(self):
         s1 = cm.sphere(1.0)
