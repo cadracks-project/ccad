@@ -4828,7 +4828,7 @@ def offset(s1, dist, tolerance=1e-3, join='arc', mode='skin'):
         elif _raw_type(raw_shape) == 'Solid':
             ss.append(Solid(raw_shape))
         elif _raw_type(raw_shape) == 'Shell':
-            ss.append(Solid([raw_shape]))
+            ss.append(Solid([Shell(raw_shape)]))
         else:
             # print('Warning: Unexpected type', _raw_type(raw_shape))
             logger.warning('Warning: Unexpected type %s' %
