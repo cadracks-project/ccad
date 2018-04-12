@@ -1,0 +1,31 @@
+package:
+  name: ccad
+  version: "0.2.0"
+
+source:
+  path: ../ccad
+
+build:
+  number: 0
+  noarch: python
+  script: python setup.py install --single-version-externally-managed --record record.txt
+  include_recipe: True
+
+requirements:
+  build:
+    - python
+    - numpy
+    - setuptools
+
+  run:
+    - python
+    - numpy
+    - matplotlib
+    - pyqt >=5
+    # - pythonocc-core ==0.18.2
+
+about:
+  home: https://github.com/osv-team/ccad
+  license: GPLv3
+  license_file: LICENSE
+  summary: PythonOCC wrapper

@@ -16,7 +16,7 @@ __name__ = "ccad"
 __description__ = "A collection of high level geometry modelling and objects " \
                   "based on PythonOCC"
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 __author__ = "Charles Sharman, Thomas Paviot, Doug Blanding, Marko Knobl," \
              "Bernard Uguen, Guillaume Florent"
 __author_email__ = ""
