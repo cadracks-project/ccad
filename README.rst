@@ -8,6 +8,20 @@ ccad
 .. image:: https://api.codacy.com/project/badge/Grade/7a33b7bb47c74733b848b5b382a7e5ca
     :target: https://www.codacy.com/app/guillaume-florent/ccad?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=osv-team/ccad&amp;utm_campaign=Badge_Grade
 
+.. image:: https://anaconda.org/gflorent/ccad/badges/version.svg
+    :target: https://anaconda.org/gflorent/ccad
+
+.. image:: https://anaconda.org/gflorent/ccad/badges/latest_release_date.svg
+    :target: https://anaconda.org/gflorent/ccad
+
+.. image:: https://anaconda.org/gflorent/ccad/badges/platforms.svg
+    :target: https://anaconda.org/gflorent/ccad
+
+.. image:: https://anaconda.org/gflorent/ccad/badges/downloads.svg
+    :target: https://anaconda.org/gflorent/ccad
+
+
+
 
 Description
 ===========
