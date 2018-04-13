@@ -1403,11 +1403,13 @@ def from_step(name):
     """
     if _path.exists(name):
         reader = _STEPControl.STEPControl_Reader()
-        #logger.info("Reading STEP file : %s" % name)
-        status = reader.ReadFile(name)
-        #logger.info("Reading STEP file status : %s" % str(status))
-        okay = reader.TransferRoots()
-        #logger.info("Reading STEP file okay : %s" % str(okay))
+        # logger.info("Reading STEP file : %s" % name)
+        # status = reader.ReadFile(name)
+        _ = reader.ReadFile(name)
+        # logger.info("Reading STEP file status : %s" % str(status))
+        # okay = reader.TransferRoots()
+        _ = reader.TransferRoots()
+        # logger.info("Reading STEP file okay : %s" % str(okay))
         shape = reader.OneShape()
         return _convert_import(shape)
     else:
@@ -2230,8 +2232,8 @@ class Shape(object):
         """
         self.shape = _rotate(self, (0.0, 0.0, 0.0), (0.0, 0.0, 1.0), angle)
 
-    def unitary(self, U):
-        self.shape = _unitary(self,U)
+    # def unitary(self, U):
+    #     self.shape = _unitary(self, U)
 
     def mirror(self, pabout, pdir):
         """
@@ -3717,18 +3719,16 @@ class Solid(Shape):
                     self.shape = new_shell
 
 
-"""
-Primitives
-----------
-
-Philosophy
-----------
-OCC offers a variety of primitive input arguments.  Users typically
-use 1-2 of them, and the others cause confusion for those who don't
-use them.  Instead, only offer the variety that provides unique
-topologies.  Those varieties with differing positions and orientations
-are not used.  They can be arrived at with transformations.
-"""
+# Primitives
+# ----------
+#
+# Philosophy
+# ----------
+# OCC offers a variety of primitive input arguments.  Users typically
+# use 1-2 of them, and the others cause confusion for those who don't
+# use them.  Instead, only offer the variety that provides unique
+# topologies.  Those varieties with differing positions and orientations
+# are not used.  They can be arrived at with transformations.
 
 
 # Edge Primitives

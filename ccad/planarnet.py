@@ -298,7 +298,7 @@ class PlanarNet(nx.Graph):
 
             if asolid.check():
                 print("closed shape")
-                # update the graph 
+                # update the graph
             else:
                 print("open shape")
 

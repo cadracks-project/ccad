@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import sys
-
-"""
+r"""
 Description
 -----------
 ccad unittest.  View ../model.py for a full description of ccad.
@@ -19,6 +17,7 @@ Distributed under the GNU LESSER GENERAL PUBLIC LICENSE Version 3.
 View LICENSE for details.
 
 """
+import sys
 
 import unittest
 

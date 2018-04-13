@@ -7,7 +7,7 @@ View model.py for a full description of ccad.
 
 """
 
-from setuptools import setup, find_packages
+from setuptools import setup
 # To use a consistent encoding
 import codecs
 from os import path

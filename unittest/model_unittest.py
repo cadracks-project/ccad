@@ -34,7 +34,7 @@ except ImportError:
 import math
 import unittest
 import sys
-from ast import literal_eval
+# from ast import literal_eval
 
 
 def dp(p1, p2):
@@ -285,7 +285,8 @@ class TestSolidFunctions(unittest.TestCase):
 
     def test_bounding_box(self):
         s1 = cm.box(2.0, 3.0, 4.0)
-        bbs1 = s1.bounding_box()
+        # bbs1 = s1.bounding_box()
+        _ = s1.bounding_box()
 
 
 # Import Functions
