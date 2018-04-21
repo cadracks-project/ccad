@@ -260,7 +260,7 @@ def _unitary_old(s1, U):
    #if np.isclose(la.det(U), -1):
     #    s2 = s2.Reversed()
 
-    return trf.Shape() 
+    return trf.Shape()
 
 
 def _translate(s1, pdir):
@@ -1403,11 +1403,13 @@ def from_step(name):
     """
     if _path.exists(name):
         reader = _STEPControl.STEPControl_Reader()
-        #logger.info("Reading STEP file : %s" % name)
-        status = reader.ReadFile(name)
-        #logger.info("Reading STEP file status : %s" % str(status))
-        okay = reader.TransferRoots()
-        #logger.info("Reading STEP file okay : %s" % str(okay))
+        # logger.info("Reading STEP file : %s" % name)
+        # status = reader.ReadFile(name)
+        _ = reader.ReadFile(name)
+        # logger.info("Reading STEP file status : %s" % str(status))
+        # okay = reader.TransferRoots()
+        _ = reader.TransferRoots()
+        # logger.info("Reading STEP file okay : %s" % str(okay))
         shape = reader.OneShape()
         return _convert_import(shape)
     else:
@@ -2230,8 +2232,8 @@ class Shape(object):
         """
         self.shape = _rotate(self, (0.0, 0.0, 0.0), (0.0, 0.0, 1.0), angle)
 
-    def unitary(self, U):
-        self.shape = _unitary(self,U)
+    # def unitary(self, U):
+    #     self.shape = _unitary(self, U)
 
     def mirror(self, pabout, pdir):
         """
@@ -3219,11 +3221,11 @@ class Shell(Shape):
     def __repr__(self):
         st = 'Shell\n_____\n'
         subs = self.subshapes('Face')
-        for k,sub in enumerate(subs):
+        for k, sub in enumerate(subs):
             st = st + 'Face : %d' % k+'\n'
             st = st + sub.__repr__()
 
-        return(st)
+        return st
 
     def center(self):
         r""" determine Shell center
@@ -3310,7 +3312,7 @@ class Solid(Shape):
         lfaces = self.subshapes('Face')
         for face in lfaces:
             st = st + face.__repr__()
-        return(st)
+        return st
 
     def __add__(self, other):
         return fuse(self, other)
@@ -3526,21 +3528,21 @@ class Solid(Shape):
         return g1.Mass()  # Returns volume when density hasn't been set
 
     def bounding_box(self):
-        #vertices = self.subshapes('Vertex')
-        #pts = np.array([])
-        #pts.shape = (0,3)
-        #for vertex in vertices:
-        #    pt = np.array(vertex.center())[None,:]
-        #    pts = np.vstack((pts,pt))
-        #xmin = np.min(pts[:,0])
-        #xmax = np.max(pts[:,0])
-        #ymin = np.min(pts[:,1])
-        #ymax = np.max(pts[:,1])
-        #zmin = np.min(pts[:,2])
-        #zmax = np.max(pts[:,2])
-        #bb = np.array([[xmin,ymin,zmin],[xmax,ymax,zmax]])
-        bb = np.array(self.bounds()).reshape(2,3)
-        return(bb)
+        # vertices = self.subshapes('Vertex')
+        # pts = np.array([])
+        # pts.shape = (0,3)
+        # for vertex in vertices:
+        #     pt = np.array(vertex.center())[None,:]
+        #     pts = np.vstack((pts,pt))
+        # xmin = np.min(pts[:,0])
+        # xmax = np.max(pts[:,0])
+        # ymin = np.min(pts[:,1])
+        # ymax = np.max(pts[:,1])
+        # zmin = np.min(pts[:,2])
+        # zmax = np.max(pts[:,2])
+        # bb = np.array([[xmin,ymin,zmin],[xmax,ymax,zmax]])
+        bb = np.array(self.bounds()).reshape(2, 3)
+        return bb
 
     def simplify(self, skip_edges=0, skip_faces=0, skip_fits=0,
                  stopat=-1, tolerance=1e-3):
@@ -3717,18 +3719,16 @@ class Solid(Shape):
                     self.shape = new_shell
 
 
-"""
-Primitives
-----------
-
-Philosophy
-----------
-OCC offers a variety of primitive input arguments.  Users typically
-use 1-2 of them, and the others cause confusion for those who don't
-use them.  Instead, only offer the variety that provides unique
-topologies.  Those varieties with differing positions and orientations
-are not used.  They can be arrived at with transformations.
-"""
+# Primitives
+# ----------
+#
+# Philosophy
+# ----------
+# OCC offers a variety of primitive input arguments.  Users typically
+# use 1-2 of them, and the others cause confusion for those who don't
+# use them.  Instead, only offer the variety that provides unique
+# topologies.  Those varieties with differing positions and orientations
+# are not used.  They can be arrived at with transformations.
 
 
 # Edge Primitives
@@ -4826,6 +4826,8 @@ def offset(s1, dist, tolerance=1e-3, join='arc', mode='skin'):
                 ex.Next()
         elif _raw_type(raw_shape) == 'Solid':
             ss.append(Solid(raw_shape))
+        elif _raw_type(raw_shape) == 'Shell':
+            ss.append(Solid([Shell(raw_shape)]))
         else:
             # print('Warning: Unexpected type', _raw_type(raw_shape))
             logger.warning('Warning: Unexpected type %s' %

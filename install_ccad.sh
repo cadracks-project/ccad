@@ -8,9 +8,7 @@ imageName="guillaume-florent/ccad:latest"
 containerName="ccad"
 displayVar="$DISPLAY"
 
-echo "Building Docker container ${containerName}"
-
-docker build --tag ${imageName} .
+docker build --file Dockerfile.py3 --tag ${imageName} .
 
 docker run  -it -d --name ${containerName}                  \
     -e DISPLAY=${displayVar}                                \
@@ -18,10 +16,3 @@ docker run  -it -d --name ${containerName}                  \
     --volume="${home}:${home}"                              \
      -v=/tmp/.X11-unix:/tmp/.X11-unix ${imageName}          \
      /bin/bash
-
-
-echo "Container ${containerName} was created."
-
-echo "*********************************************************"
-echo "Run the ./start_ccad.sh script to launch container      "
-echo "*********************************************************"
