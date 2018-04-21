@@ -2696,7 +2696,7 @@ class Edge(Shape):
             raise TypeError
 
     def __repr__(self):
-        st = ''
+        st = self.type() + '\n'
         pt = self.poly()
         st = st + '(%.2f %.2f %.2f) -> (%.2f %.2f %.2f)' % (pt[0][0],pt[0][1],pt[0][2],pt[1][0],pt[1][1],pt[1][2]) +'\n'
         return(st)
@@ -3776,7 +3776,6 @@ def arc(rad, start_angle, end_angle):
                                        _gp.gp_Dir(0.0, 0.0, 1.0)),
                             rad),
                 start_angle, end_angle, False).Value()).Edge())
-
 
 def arc_ellipse(rad1, rad2, start_angle, end_angle):
     """
