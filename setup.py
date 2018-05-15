@@ -44,7 +44,7 @@ setup(
     keywords='OpenCASCADE pythonocc CAD',
     packages=['ccad'],
     install_requires=[],
-    include_dirs = [numpy.get_include()],
+    include_dirs=[numpy.get_include()],
     extras_require={
         'dev': [],
         'test': ['pytest', 'coverage'],

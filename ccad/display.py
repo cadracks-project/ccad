@@ -1259,6 +1259,7 @@ def view(perspective=False):
     ViewQt
 
     """
+
     global manager, app
 
     if manager == 'qt':
@@ -1285,17 +1286,65 @@ def start():
         print('Error: Manager', manager, 'not supported')
 
 
+def viewer(ccad_shape_s, color_s=None):
+    r"""Call to the aoc viewer to display a ccad shape"""
+    from random import randint
+    import wx
+    from aocutils.display.wx_viewer import Wx3dViewerFrame, colour_wx_to_occ
+
+    if color_s is None:
+        if isinstance(ccad_shape_s, (list, tuple, set)):
+            color_s = [(randint(0, 255), randint(0, 255), randint(0, 255)) for c in ccad_shape_s]
+        else:
+            color_s = (randint(0, 255), randint(0, 255), randint(0, 255))
+
+    app_ = wx.App()
+    frame = Wx3dViewerFrame()
+    viewer_ = frame.wx_3d_viewer
+    if isinstance(ccad_shape_s, (list, tuple, set)):
+        if isinstance(color_s, (list, set)):
+            for i, ccad_shape in enumerate(ccad_shape_s):
+                viewer_.display_shape(ccad_shape.shape,
+                                      color_=colour_wx_to_occ(color_s[i % len(color_s)]))
+        else:
+            for i, ccad_shape in enumerate(ccad_shape_s):
+                viewer_.display_shape(ccad_shape.shape,
+                                      color_=colour_wx_to_occ(color_s))
+    else:
+        viewer_.display_shape(ccad_shape_s.shape, color_=colour_wx_to_occ(color_s))
+    viewer_.viewer_display.FitAll()
+    app_.SetTopWindow(frame)
+    app_.MainLoop()
+
+
 if __name__ == '__main__':
     import model as cm
-    # view = ViewQt()
-    view = view()
-    view.set_background((0.35, 0.35, 0.35))
-    s1 = cm.sphere(1.0)
-    view.display(s1, (0.5, 0.0, 0.0), line_type='solid', line_width=3)
-    s2 = cm.box(1, 2, 3)
-    view.display(s2,
-                 (0.0, 0.0, 0.5),
-                 transparency=0.5,
-                 line_type='dash',
-                 line_width=1)
-    start()
+    # # view = ViewQt()
+    # view = view()
+    # view.set_background((0.35, 0.35, 0.35))
+    # s1 = cm.sphere(1.0)
+    # view.display(s1, (0.5, 0.0, 0.0), line_type='solid', line_width=3)
+    # s2 = cm.box(1, 2, 3)
+    # view.display(s2,
+    #              (0.0, 0.0, 0.5),
+    #              transparency=0.5,
+    #              line_type='dash',
+    #              line_width=1)
+    # start()
+
+    # View a single ccad solid with random color
+    viewer(cm.sphere(1.0))
+
+    # View a single ccad solid with specified color
+    viewer(cm.sphere(1.0), color_s=(0, 255, 0))
+
+    # View a list of ccad solids with random colors
+    viewer([cm.sphere(1.0), cm.box(1, 2, 3)])
+
+    # View a list of ccad solids with different specified colors for each solid
+    viewer([cm.sphere(1.0), cm.box(1, 2, 3)],
+           color_s=[(255, 0, 0), (0, 0, 255)])
+
+    # View a list of ccad solids with a single color
+    viewer([cm.sphere(1.0), cm.box(1, 2, 3)],
+           color_s=(255, 0, 255))
