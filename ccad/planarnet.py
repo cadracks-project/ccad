@@ -14,7 +14,7 @@ import pdb
 import logging
 import warnings
 
-warnings.filterwarnings('error')
+#warnings.filterwarnings('error')
 logger = logging.getLogger(__name__)
 
 
@@ -194,6 +194,7 @@ class PlanarNet(nx.Graph):
 
         Parameters
         ----------
+
         iface : int
         iedge : int
         nedges : int
@@ -201,13 +202,17 @@ class PlanarNet(nx.Graph):
 
         """
 
+        # add a new node to the graph
         self.nnode = self.nnode + 1
-        # get the selected edge of the selected face
+        # get the selected edge (iedge) of the selected face (iface)
         ed = self.lfaces[iface].subshapes('Edge')[iedge]
-        points = ed.poly()
-        z0 = points[0][0]+1j*points[0][1]
-        z1 = points[1][0]+1j*points[1][1]
 
+        # construct the equivalent complex number of the 2 extremities of the
+        # edge
+        points = ed.poly()
+        z0 = points[0][0] + 1j*points[0][1]
+        z1 = points[1][0] + 1j*points[1][1]
+        # construct the new face with nedges sides
         lz = [z0, z1]
         for  k in range(nedges-2):
             dz = lz[-2]-lz[-1]
@@ -217,13 +222,22 @@ class PlanarNet(nx.Graph):
             lpts.append((np.real(lz[k]),np.imag(lz[k]),0.0))
         lpts.append(lpts[0])
         new_face = cm.plane(cm.polygon(lpts))
+
+        # control homogeneity of face normals
         if new_face.normal()[2]==-1:
             new_face = cm.plane(cm.polygon(lpts[::-1]))
+
+        # append new face to list of faces
         self.lfaces.append(new_face)
+
+        # new face number in the graph
         node_num = self.nnode - 1
+
         self.add_node(node_num,normal=new_face.normal())
         self.pos[node_num] = new_face.center()[0:2]
         self.add_edge(iface, node_num, angle=angle, iedge=iedge)
+
+        # construct Shell from Face
         self.shell = cm.Shell(self.lfaces)
 
     def fold(self, reverse=False):
@@ -242,7 +256,7 @@ class PlanarNet(nx.Graph):
 
         """
 
-        for edge in self.edges():
+        for edge in list(self.edges()):
             if0 = edge[0]
             if1 = edge[1]
             ag = self[if0][if1]['angle']
@@ -252,6 +266,7 @@ class PlanarNet(nx.Graph):
             else:
                 angle = ag
             iedge = self[if0][if1]['iedge']
+
             ed = self.lfaces[if0].subshapes('Edge')[iedge]
             points = ed.poly()
             pdir = np.array(points[1]) - np.array(points[0])
@@ -260,8 +275,8 @@ class PlanarNet(nx.Graph):
             # create 2 subgraphs
             self.remove_edge(if0, if1)
             #  DEPRECATED function in networkx
-            # lgraphs = list(nx.connected_component_subgraphs(nx.Graph(self)))
-            lgraphs = [ nx.Graph(self).subgraph(c).copy() for c in nx.connected_components(nx.Graph(self)) ] 
+            lgraphs = list(nx.connected_component_subgraphs(nx.Graph(self)))
+            #lgraphs = [ nx.Graph(self).subgraph(c).copy() for c in nx.connected_components(nx.Graph(self)) ] 
 
             ln0 = lgraphs[0].node.keys()
             ln1 = lgraphs[1].node.keys()
