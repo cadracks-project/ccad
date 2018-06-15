@@ -243,13 +243,13 @@ class PlanarNet(nx.Graph):
         for edge in self.edges():
             if0 = edge[0]
             if1 = edge[1]
-            ag = self.edge[if0][if1]['angle']
+            ag = self[if0][if1]['angle']
             # handle folding direction
             if reverse:
                 angle = -ag
             else:
                 angle = ag
-            iedge = self.edge[if0][if1]['iedge']
+            iedge = self[if0][if1]['iedge']
             ed = self.lfaces[if0].subshapes('Edge')[iedge]
             points = ed.poly()
             pdir = np.array(points[1]) - np.array(points[0])

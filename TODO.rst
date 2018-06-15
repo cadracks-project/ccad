@@ -54,3 +54,5 @@ To Do (list written by Charles Scharman)
    types.  That seems harder but is more python-like.
 
 9. Separate compound, compsolid from solid.
+
+10. In 
