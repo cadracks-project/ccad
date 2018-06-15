@@ -259,7 +259,9 @@ class PlanarNet(nx.Graph):
 
             # create 2 subgraphs
             self.remove_edge(if0, if1)
-            lgraphs = list(nx.connected_component_subgraphs(nx.Graph(self)))
+            #  DEPRECATED function in networkx
+            # lgraphs = list(nx.connected_component_subgraphs(nx.Graph(self)))
+            lgraphs = [ nx.Graph(self).subgraph(c).copy() for c in nx.connected_components(nx.Graph(self)) ] 
 
             ln0 = lgraphs[0].node.keys()
             ln1 = lgraphs[1].node.keys()
