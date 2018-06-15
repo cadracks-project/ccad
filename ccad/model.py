@@ -2955,9 +2955,14 @@ class Wire(Shape):
         if 'ax' in kwargs:
             ax = kwargs.pop('ax')
         else:
-            ax = fig.add_subplot(111)
             if b3d:
                 ax = fig.add_subplot(111,projection='3d')
+            else:
+                ax_list = fig.axes
+                if len(ax_list)==0:
+                    ax = fig.add_subplot(111)
+                else:
+                    ax = ax_list[0]
 
         bgrid = kwargs.pop('bgrid',True)
         fontsize = kwargs.pop('fontsize',18)
@@ -2977,7 +2982,7 @@ class Wire(Shape):
             t.set_fontsize(fontsize)
 
         if bgrid:
-            ax.grid('on')
+            ax.grid(True)
 
         return fig,ax
 
