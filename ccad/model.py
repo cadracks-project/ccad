@@ -1398,9 +1398,11 @@ def from_step(name):
 
     Returns
     -------
-    <tbc>
+
+    shape
 
     """
+
     if _path.exists(name):
         reader = _STEPControl.STEPControl_Reader()
         # logger.info("Reading STEP file : %s" % name)
@@ -3315,8 +3317,9 @@ class Solid(Shape):
     def __repr__(self):
         st = 'Volume : ' + '%.3f' % self.volume() + '\n'
         lfaces = self.subshapes('Face')
-        for face in lfaces:
-            st = st + face.__repr__()
+        st =  st + str(len(lfaces)) +'\n'
+        #for face in lfaces:
+        #    st = st + face.__repr__()
         return st
 
     def __add__(self, other):
