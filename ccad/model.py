@@ -34,7 +34,8 @@ if PY3 is True:
     from urllib.request import urlopen
 else:
     from urllib import urlopen
-import imp
+# import imp
+import importlib.util
 
 import matplotlib.pyplot as plt
 
@@ -1848,8 +1849,10 @@ class Part(object):
         #     logger.error(msg)
         #     raise IOError(msg)
 
-        # TODO : PY3 versions (imp is not PY3 compliant)
-        module = imp.load_source(os.path.splitext(py_filename)[0], py_filename)
+        spec = importlib.util.spec_from_file_location(os.path.splitext(py_filename)[0], py_filename)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        # module = imp.load_source(os.path.splitext(py_filename)[0], py_filename)
         if not hasattr(module, 'part'):
             raise ValueError("The Python module should have a 'part' variable")
         solid = module.part
@@ -1881,8 +1884,12 @@ class Part(object):
         with open("tmp.py", "wb") as tmp_py_file:
             for line in response.readlines():
                 tmp_py_file.write(line)
-        # TODO : PY3 versions (imp is not PY3 compliant)
-        module = imp.load_source(name, "tmp.py")
+
+        spec = importlib.util.spec_from_file_location(name, "tmp.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        # module = imp.load_source(name, "tmp.py")
+
         solid = module.part
         anchors = module.anchors
         #logger.debug("solid has type: %s" % type(solid))
