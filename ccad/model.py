@@ -3892,10 +3892,13 @@ def bezier(pts, weights=None):
         for count in range(num_pts):
             tweights.SetValue(count + 1, weights[count])
         retval = Edge(_BRepBuilderAPI.BRepBuilderAPI_MakeEdge(
-                _Geom_BezierCurve(tpts, tweights).GetHandle()).Edge())
+                _Geom_BezierCurve(tpts, tweights)).Edge())
+                # _Geom_BezierCurve(tpts, tweights).GetHandle()).Edge())
+
     else:
         retval = Edge(_BRepBuilderAPI.BRepBuilderAPI_MakeEdge(
-                _Geom_BezierCurve(tpts).GetHandle()).Edge())
+                _Geom_BezierCurve(tpts)).Edge())
+                # _Geom_BezierCurve(tpts).GetHandle()).Edge())
 
     return retval
 
