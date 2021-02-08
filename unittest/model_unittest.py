@@ -24,7 +24,8 @@ Notes
 2. Basic functionality caught in most places, particularly on
    different arguments.  Add more stringency as needed.
 """
-from __future__ import print_function
+
+from os.path import join, dirname
 
 try:
     import ccad.model as cm
@@ -299,7 +300,7 @@ class TestImportFunctions(unittest.TestCase):
     # test_to_step covered by classes
 
     def test_from_svg(self):
-        ws = cm.from_svg('../doc/logo.svg')
+        ws = cm.from_svg(join(dirname(__file__), '../doc/logo.svg'))
         total_length = 0.0
         for w in ws:
             total_length = total_length + w.length()
